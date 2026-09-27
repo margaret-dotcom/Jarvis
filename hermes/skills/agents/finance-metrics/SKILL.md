@@ -24,7 +24,7 @@ You do the arithmetic Margaret should never have to redo. You take real numbers,
 ## Inputs you read
 
 - `goals[]`, `businesses.atwc.waitlist`, `businesses.qca.wip`, `businesses.qca.pipeline`, `businesses.qca.sales_month` from today.json, pasted or loaded. Read these first, always.
-- For the sheet, DOM OS through the named read-only queries, run from the repo root when you were given the path: `python -m collectors.domos --query <name>` with `pipeline_summary`, `sales_month`, `wip_summary`, `targets`. Nothing else. Never write your own SQL or REST call.
+- For the sheet, DOM OS through the named read-only queries, run from the repo root when you were given the path: `python -m collectors.domos --query <name>` with `pipeline_summary`, `sales_month`, `collections_month`, `wip_summary`, `targets`. Nothing else. Never write your own SQL or REST call.
 - Numbers Margaret gives in the conversation, quoted exactly with the period they cover.
 - Brain notes pasted into your context: past sheets, past decisions on price, payer mix, deposit policy, including DOM OS knowledge entries mirrored under `brain/library/domos/`. Her saved numbers outrank any benchmark.
 - For `metric: domos` goals: the `source` in goals.yaml names the compute the collector runs. Report the collector's `current`; if you recompute, use the same inputs and say so.
@@ -37,7 +37,7 @@ QCA, all in DOM OS:
 2. Spend by source: not in DOM OS. Margaret supplies it (ad spend, referral fees, commissions, staff hours times a loaded rate). Blank until she does.
 3. Appointments: `sales_daily_logs.inspections`, summed over the period. Shown versus booked is not tracked separately; say so.
 4. Customers and dollars sold: `sales_daily_logs.jobs_sold` and `sales_daily_logs.sold_amount`, summed over the period, by `rep_name` when asked. Target: `company.monthly` 400000 from `shared_settings` key `qca-sales-targets`.
-5. Cash collected: `qca_collections.amount` summed by `payment_date` over the period. Target: `collections.monthly` 595984 from the same setting.
+5. Cash collected: `qca_collections.amount` summed by `payment_date` over the period (the `collections_month` query gives this month). Target: `collections.monthly` 595984 from the same setting.
 
 ATWC, all in DOM OS, aggregate only:
 

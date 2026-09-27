@@ -58,7 +58,7 @@ Tables the collectors and queries read, all in the public schema, owner scoped b
 - `qca_wip`: job_number, customer, job_status, contract_amount, change_orders, actual_cost_to_date, invoiced_to_date, cash_collected_to_date, deposit. Queries: `wip_summary`, `wip_low_gp`.
 - `qca_pipeline_jobs`: milestone (Lead or Prospect), estimate_total, rep_name, lead_source. Query: `pipeline_summary`.
 - `sales_daily_logs`: rep_name, log_date, touches, inspections, estimates_written, jobs_sold, sold_amount. Query: `sales_month`.
-- `qca_collections`: payment_date, amount.
+- `qca_collections`: payment_date, amount. Query: `collections_month`.
 - `profit_alerts`: job_key, kind, detail, flagged_on. Query: `profit_alerts`.
 - `shared_settings` key `qca-sales-targets`: company.monthly 400000, collections.monthly 595984. Part of `targets`.
 - `knowledge_entries`: business (atwc, qca, both), category, title, content, active. Mirrored nightly into `brain/library/domos/`, so `brain.search` finds it. Live search: `knowledge_search --q "text"`.

@@ -94,10 +94,13 @@
             "type": "object",
             "required": ["title"],
             "properties": {
+              "id": {"type": "string"},
               "title": {"type": "string"},
-              "kind": {"type": "string"},
+              "kind": {"type": "string", "description": "As stored in dom_notifications.kind, for example task, eow_response, one_on_one."},
+              "body": {"type": "string"},
               "href": {"type": "string", "description": "Path inside DOM OS. Prefix with domos_url to open it."},
-              "due_date": {"type": ["string", "null"]}
+              "due_date": {"type": ["string", "null"]},
+              "created_at": {"type": ["string", "null"]}
             }
           }
         },
