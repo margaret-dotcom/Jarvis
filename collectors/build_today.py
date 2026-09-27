@@ -32,7 +32,7 @@ from dateutil import parser as dateparser
 
 from . import config
 
-ALL_COLLECTORS = ["gmail", "gcal", "asana", "airtable", "goals", "brain"]
+ALL_COLLECTORS = ["gmail", "gcal", "domos", "goals", "brain"]
 CONTENT_MAX_AGE_HOURS = 48
 
 
@@ -45,7 +45,7 @@ def _short_error(exc: BaseException) -> str:
     """One line about an exception, with anything token-shaped left out."""
     text = f"{exc.__class__.__name__}: {exc}".strip()
     text = " ".join(text.split())
-    for key in ("ASANA_TOKEN", "AIRTABLE_TOKEN", "YOUTUBE_API_KEY"):
+    for key in ("SUPABASE_SERVICE_ROLE_KEY", "YOUTUBE_API_KEY"):
         value = config.env(key)
         if value:
             text = text.replace(value, "[redacted]")
@@ -139,7 +139,9 @@ def skeleton(now: datetime) -> dict:
         "email": {"accounts": [],
                   "counts": {"unread": 0, "needs_reply": 0, "waiting_on": 0},
                   "needs_reply": [], "waiting_on": []},
+        "domos_url": config.env("DOMOS_URL", "https://domoshq.com"),
         "tasks": {"source": "", "due_today": [], "overdue": [], "completed_yesterday": []},
+        "domos": {"notifications": [], "eow_pending": [], "events_today": []},
         "businesses": {},
         "brain": {"total_items": 0, "ingested_yesterday": 0, "inbox_pending": 0, "recent": []},
         "sources": [],
@@ -185,20 +187,20 @@ def collect_all(only: list[str]) -> tuple[dict, Sources]:
         doc["calendar"]["events"].sort(
             key=lambda e: (e["day"] != "today", not e.get("all_day"), e["start"]))
 
-    if "asana" in only:
-        from . import asana
-        result = sources.run("asana", asana.collect)
+    if "domos" in only:
+        from . import domos
+        result = sources.run("domos_tasks", domos.tasks)
         if result:
             doc["tasks"] = result
-
-    if "airtable" in only:
-        from . import airtable
-        waitlist = sources.run("airtable_atwc", airtable.atwc_waitlist)
-        if waitlist is not None:
-            doc["businesses"].setdefault("atwc", {})["waitlist"] = waitlist
-        wip = sources.run("airtable_qca", airtable.qca_wip)
-        if wip is not None:
-            doc["businesses"].setdefault("qca", {})["wip"] = wip
+        result = sources.run("domos_inbox", domos.inbox)
+        if result:
+            doc["domos"] = result
+        result = sources.run("domos_atwc", domos.atwc)
+        if result:
+            doc["businesses"].setdefault("atwc", {}).update(result)
+        result = sources.run("domos_qca", domos.qca)
+        if result:
+            doc["businesses"].setdefault("qca", {}).update(result)
 
     if "goals" in only:
         from . import goals
@@ -240,7 +242,7 @@ def sample_document() -> tuple[dict, Sources]:
         return (now - timedelta(hours=hours)).isoformat(timespec="minutes")
 
     atwc = "margaret@mytherapywellness.com"
-    qca = "margaret@qca.example.com"
+    qca = "margarets@qcaroofing.com"
     accounts = [
         {"email": atwc, "business": "atwc", "label": "ATWC inbox"},
         {"email": qca, "business": "qca", "label": "QCA inbox"},
@@ -340,28 +342,41 @@ def sample_document() -> tuple[dict, Sources]:
         ],
     }
     doc["tasks"] = {
-        "source": "asana",
+        "source": "domos",
         "due_today": [
-            {"id": "task-sample-1", "title": "Approve September payroll", "project": "ATWC Admin",
-             "business": "atwc", "due": today.isoformat(),
-             "link": "https://app.asana.com/0/0/task-sample-1"},
-            {"id": "task-sample-2", "title": "Send Hartwell revised estimate", "project": "QCA Sales",
-             "business": "qca", "due": today.isoformat(),
-             "link": "https://app.asana.com/0/0/task-sample-2"},
+            {"id": "task-sample-1", "title": "Approve September payroll", "project": "Admin",
+             "business": "atwc", "due": today.isoformat(), "link": "https://domoshq.com/tasks"},
+            {"id": "task-sample-2", "title": "Send Hartwell revised estimate", "project": "Sales",
+             "business": "qca", "due": today.isoformat(), "link": "https://domoshq.com/tasks"},
         ],
         "overdue": [
-            {"id": "task-sample-3", "title": "Renew clinic liability policy", "project": "ATWC Admin",
+            {"id": "task-sample-3", "title": "Renew clinic liability policy", "project": "Admin",
              "business": "atwc", "due": (today - timedelta(days=3)).isoformat(),
-             "link": "https://app.asana.com/0/0/task-sample-3"},
+             "link": "https://domoshq.com/tasks"},
         ],
         "completed_yesterday": [
-            {"id": "task-sample-4", "title": "Post the October class schedule", "project": "ATWC Marketing",
-             "business": "atwc", "due": yesterday.isoformat(),
-             "link": "https://app.asana.com/0/0/task-sample-4"},
-            {"id": "task-sample-5", "title": "Order shingles for Pine St", "project": "QCA Jobs",
-             "business": "qca", "due": yesterday.isoformat(),
-             "link": "https://app.asana.com/0/0/task-sample-5"},
+            {"id": "task-sample-4", "title": "Post the October class schedule", "project": "Marketing",
+             "business": "atwc", "due": yesterday.isoformat(), "link": "https://domoshq.com/tasks"},
+            {"id": "task-sample-5", "title": "Order shingles for Pine St", "project": "Production",
+             "business": "qca", "due": yesterday.isoformat(), "link": "https://domoshq.com/tasks"},
         ],
+    }
+    doc["domos"] = {
+        "notifications": [
+            {"id": "n-1", "kind": "eow_response", "title": "EOW report from Clare is waiting",
+             "body": "", "href": "/growth", "due_date": today.isoformat(), "created_at": ago(20)},
+            {"id": "n-2", "kind": "task", "title": "2 tasks due today", "body": "",
+             "href": "/tasks", "due_date": today.isoformat(), "created_at": ago(3)},
+            {"id": "n-3", "kind": "one_on_one", "title": "One on one with Sergio needs your notes",
+             "body": "", "href": "/one-on-ones", "due_date": None, "created_at": ago(30)},
+        ],
+        "eow_pending": [
+            {"employee": "Clare Lawlor", "week_end": (today - timedelta(days=2)).isoformat(),
+             "submitted_at": ago(40)},
+            {"employee": "Sergio Ramos", "week_end": (today - timedelta(days=2)).isoformat(),
+             "submitted_at": ago(38)},
+        ],
+        "events_today": [],
     }
     doc["businesses"] = {
         "atwc": {"waitlist": {
@@ -375,7 +390,11 @@ def sample_document() -> tuple[dict, Sources]:
                  "status": "Scheduled/In Progress"},
                 {"job": "2026-037", "customer": "Okonkwo", "gp_pct": 38.1,
                  "status": "On Hold"},
-            ]}},
+            ]},
+            "pipeline": {"leads": 42, "prospects": 31, "estimate_total": 612400.0},
+            "sales_month": {"touches": 310, "inspections": 38, "estimates": 14,
+                            "sold": 22, "sold_amount": 534200.0},
+            "profit_alerts_recent": 3},
     }
     doc["brain"] = {
         "total_items": 142, "ingested_yesterday": 3, "inbox_pending": 2,
@@ -417,7 +436,7 @@ def sample_document() -> tuple[dict, Sources]:
     }
     sources = Sources()
     for name in (f"gmail:{atwc}", f"gmail:{qca}", f"gcal:{atwc}", f"gcal:{qca}",
-                 "asana", "airtable_atwc", "airtable_qca", "goals", "brain"):
+                 "domos_tasks", "domos_inbox", "domos_atwc", "domos_qca", "goals", "brain"):
         sources.record(name, "ok", "sample data, nothing was fetched")
     doc["sources"] = sources.entries
     return doc, sources

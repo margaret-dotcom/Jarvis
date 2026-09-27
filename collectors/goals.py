@@ -1,27 +1,27 @@
 """Goals collector: reads goals/goals.yaml and reports status where it can.
 
 Every goal starts as status unknown with a note that the evening summary
-fills it in. Two Airtable computes are supported here because they are
-cheap and exact. Matching is by keyword on the goal's source.compute string:
+fills it in. Goals with `metric: domos` are computed live from DOM OS using
+one of the named computes below. A goal's `target` can be a number or a
+DOM OS target path such as `atwc_targets.revenue.monthly`, in which case
+the number DOM OS holds today is used, so editing a target in DOM OS
+changes the goal here without touching this file.
 
-  waitlist conversion   compute mentions both "scheduled" and "removed"
-                        (for example "scheduled / (scheduled + removed) ...").
-                        current = scheduled / (scheduled + removed) in percent
-                        for records entered this calendar quarter.
-  minimum GP            compute mentions "gross profit" or "gp" together with
-                        "min" (for example "minimum TOTAL GROSS PROFIT across
-                        jobs with status Scheduled/In Progress").
-                        current = the lowest TOTAL GROSS PROFIT among
-                        Scheduled/In Progress jobs.
+Named computes (source.compute):
+  atwc_revenue_month          sum of atwc_revenue_lines.total_fee this month
+  atwc_sessions_week          count of atwc_billing_sessions this week (Mon start)
+  atwc_waitlist_conversion    won / (won + lost) among waitlist entered this quarter
+  qca_sold_month              sum of sales_daily_logs.sold_amount this month
+  qca_collections_month       sum of qca_collections.amount this month
+  qca_min_gp_active           lowest gross profit percent across Scheduled/In Progress jobs
 
-Status for a supported compute: on_track when current meets the target,
-at_risk when current is within ten percent of the target, behind otherwise.
-Anything else stays unknown.
+Status: on_track when current meets the target, at_risk within ten percent,
+behind otherwise. Anything unsupported stays unknown.
 """
-
 from __future__ import annotations
 
 from datetime import date
+from typing import Callable
 
 import yaml
 
@@ -72,57 +72,66 @@ def _status_for(current: float | None, target) -> str:
     return "behind"
 
 
-def compute_kind(compute: str) -> str | None:
-    """Which supported compute a goal asks for, by keyword. None if unsupported."""
-    c = (compute or "").lower()
-    if "scheduled" in c and "removed" in c:
-        return "waitlist_conversion"
-    if ("gross profit" in c or "gp" in c) and "min" in c:
-        return "min_gp"
-    return None
+def _computes() -> dict[str, tuple[Callable[[], float | None], str]]:
+    from . import domos
+
+    def conversion() -> float | None:
+        return domos.waitlist_conversion_pct(domos.waitlist_rows(),
+                                             config.quarter_start(config.today_local()))
+
+    def min_gp() -> float | None:
+        gps = domos.active_gp_pcts(domos.wip_rows())
+        return min(gps) if gps else None
+
+    return {
+        "atwc_revenue_month": (domos.atwc_revenue_month, "Billed this month so far."),
+        "atwc_sessions_week": (lambda: float(domos.atwc_sessions_week()), "Sessions this week so far."),
+        "atwc_waitlist_conversion": (conversion, "Won over decided, entered this quarter."),
+        "qca_sold_month": (lambda: domos.sales_month()["sold_amount"], "Sold this month so far."),
+        "qca_collections_month": (domos.collections_month, "Collected this month so far."),
+        "qca_min_gp_active": (min_gp, "Lowest gross profit among Scheduled/In Progress jobs."),
+    }
 
 
-def collect(waitlist_rows: list[dict] | None = None,
-            wip_rows: list[dict] | None = None) -> list[dict]:
-    """Return the schema's goals list.
-
-    Airtable rows can be passed in to avoid a second fetch; otherwise each
-    supported compute fetches its own table. An Airtable failure leaves that
-    goal at unknown with the reason in its note. Never raises for one goal.
-    """
-    from . import airtable
-
-    today = config.today_local()
+def collect() -> list[dict]:
+    """Return the schema's goals list. Never raises for one goal."""
     out: list[dict] = []
-    for g in _load_yaml():
+    goals = _load_yaml()
+    if not goals:
+        return out
+    computes = _computes()
+    targets_cache: dict | None = None
+    from . import domos
+
+    for g in goals:
         entry = _base_entry(g)
-        if str(g.get("metric") or "").lower() != "airtable":
+        if str(g.get("metric") or "").lower() != "domos":
             out.append(entry)
             continue
         source = g.get("source") or {}
-        kind = compute_kind(str(source.get("compute") or ""))
-        if kind is None:
-            entry["note"] = ("This compute is not one of the two the collector "
-                             "knows. " + EVENING_NOTE)
+        name = str(source.get("compute") or "").strip()
+        if name not in computes:
+            entry["note"] = f"Compute '{name}' is not one the collector knows. {EVENING_NOTE}"
             out.append(entry)
             continue
+        fn, note = computes[name]
         try:
-            if kind == "waitlist_conversion":
-                rows = waitlist_rows if waitlist_rows is not None else airtable.waitlist_rows()
-                current = airtable.waitlist_conversion_pct(rows, config.quarter_start(today))
-                entry["note"] = "Scheduled over scheduled plus removed, entered this quarter."
-            else:
-                rows = wip_rows if wip_rows is not None else airtable.wip_rows()
-                gps = airtable.active_gp_pcts(rows)
-                current = min(gps) if gps else None
-                entry["note"] = "Lowest gross profit among Scheduled/In Progress jobs."
+            if isinstance(entry["target"], str) and "." in entry["target"]:
+                if targets_cache is None:
+                    targets_cache = domos.targets()
+                resolved = domos.target_path(entry["target"], targets_cache)
+                if resolved is None:
+                    entry["note"] = f"Target path {entry['target']} not found in DOM OS. {EVENING_NOTE}"
+                    out.append(entry)
+                    continue
+                entry["target"] = resolved
+            current = fn()
             entry["current"] = current
             entry["status"] = _status_for(current, entry["target"])
-            if current is None:
-                entry["note"] = "No matching records yet. " + EVENING_NOTE
+            entry["note"] = note if current is not None else f"No matching records yet. {EVENING_NOTE}"
         except config.NotConfigured as exc:
-            entry["note"] = f"Airtable not configured ({exc}). {EVENING_NOTE}"
+            entry["note"] = f"DOM OS not configured ({exc}). {EVENING_NOTE}"
         except Exception as exc:  # noqa: BLE001, one goal must not sink the rest
-            entry["note"] = f"Airtable read failed ({exc.__class__.__name__}). {EVENING_NOTE}"
+            entry["note"] = f"DOM OS read failed ({exc.__class__.__name__}). {EVENING_NOTE}"
         out.append(entry)
     return out

@@ -1,50 +1,73 @@
 # The goals the morning brief and evening summary measure you against.
 # Every brief ends with: are you on track. This file is what "on track" means.
 #
-# Fill this in once, then edit whenever a goal changes. Keep it short: three
-# to six live goals is the sweet spot. The agents read this file every run.
+# These first four are seeded from the targets already stored in DOM OS
+# (atwc_targets and the qca-sales-targets setting). Their `target` is a path
+# into DOM OS, so when you change a target there, the goal follows. Once you
+# build goals in DOM OS itself, Jarvis will read them from there and this
+# file becomes the place for anything personal.
 #
 # Fields
 #   id        short slug, stable over time
 #   title     the goal in your words
 #   business  atwc | qca | personal | other
-#   metric    how progress is measured. One of:
-#               manual          you tell the evening summary where you are
-#               airtable        a formula the finance agent can compute from a base
-#               asana_project   percent of tasks complete in an Asana project
-#   target    the number you are aiming for
-#   unit      what the number is (clients, jobs, dollars, sessions, pct)
-#   due       YYYY-MM-DD
-#   source    for airtable: base, table, and a one-line description of the count
-#             for asana_project: the project gid
-#
-# Nothing below is real yet. These are the shape only. Replace them.
+#   metric    manual  (you tell the evening summary where you are)
+#             domos   (computed live; see collectors/goals.py for the names)
+#   target    a number, or a DOM OS target path like atwc_targets.revenue.monthly
+#   unit      what the number is (dollars, sessions, pct, ...)
+#   due       YYYY-MM-DD, or a word like "monthly" / "weekly" for rolling goals
+#   source    for domos: compute: <name>
 
-goals: []
+goals:
+  - id: atwc-revenue-month
+    title: Bill the monthly ATWC revenue target
+    business: atwc
+    metric: domos
+    target: atwc_targets.revenue.monthly
+    unit: dollars
+    due: monthly
+    source:
+      compute: atwc_revenue_month
 
-# Example shapes (leave commented until you replace with your real numbers):
-#
-# goals:
-#   - id: atwc-q4-waitlist-conversion
-#     title: Convert 70 percent of the ATWC waitlist to scheduled evaluations
-#     business: atwc
-#     metric: airtable
-#     target: 70
-#     unit: pct
-#     due: 2026-12-31
-#     source:
-#       base: appKWU9ggxyVYvs2g
-#       table: tblnwneQqlChWi8ks
-#       compute: scheduled / (scheduled + removed) for records entered this quarter
-#
-#   - id: qca-q4-gp
-#     title: Keep every active QCA job above 40 percent gross profit
-#     business: qca
-#     metric: airtable
-#     target: 40
-#     unit: pct
-#     due: 2026-12-31
-#     source:
-#       base: appkWXOY6hM0pxT76
-#       table: tblX1WhjyrukQulfC
-#       compute: minimum TOTAL GROSS PROFIT across jobs with status Scheduled/In Progress
+  - id: atwc-sessions-week
+    title: Hit the weekly ATWC session goal
+    business: atwc
+    metric: domos
+    target: atwc_targets.sessions.weekly
+    unit: sessions
+    due: weekly
+    source:
+      compute: atwc_sessions_week
+
+  - id: qca-sold-month
+    title: Sell the QCA monthly company target
+    business: qca
+    metric: domos
+    target: qca_sales_targets.company.monthly
+    unit: dollars
+    due: monthly
+    source:
+      compute: qca_sold_month
+
+  - id: qca-collections-month
+    title: Collect the QCA monthly collections target
+    business: qca
+    metric: domos
+    target: qca_sales_targets.collections.monthly
+    unit: dollars
+    due: monthly
+    source:
+      compute: qca_collections_month
+
+  - id: qca-gp-floor
+    title: Keep every active QCA job above 40 percent gross profit
+    business: qca
+    metric: domos
+    target: 40
+    unit: pct
+    due: monthly
+    source:
+      compute: qca_min_gp_active
+
+  # Add personal goals here with metric: manual. The evening summary asks
+  # you for the number in one line and carries it forward.

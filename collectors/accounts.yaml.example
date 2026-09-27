@@ -1,22 +1,22 @@
-# Copy to collectors/accounts.yaml (git-ignored) and list every Google account
-# you want in the dashboard and briefs. Each one gets its own OAuth token the
-# first time `python -m collectors.google_auth` runs.
+# Copy to collectors/accounts.yaml (git-ignored). One entry per Google
+# account. Each gets its own OAuth token the first time
+# `python -m collectors.google_auth` runs.
 #
 # business: atwc | qca | personal | other
-# label:    how the brief should refer to this inbox in plain words
+# label:    how the brief refers to this inbox in plain words
 
 accounts:
+  - email: stochmt@gmail.com
+    business: personal
+    label: personal inbox
+    calendars: [primary]
+
   - email: margaret@mytherapywellness.com
     business: atwc
     label: ATWC inbox
-    calendars: [primary]        # calendar ids to read; "primary" is the main one
+    calendars: [primary]
 
-  # - email: margaret@qcaroofing.com
-  #   business: qca
-  #   label: QCA inbox
-  #   calendars: [primary]
-
-  # - email: personal@gmail.com
-  #   business: personal
-  #   label: personal inbox
-  #   calendars: [primary]
+  - email: margarets@qcaroofing.com
+    business: qca
+    label: QCA inbox
+    calendars: [primary]
