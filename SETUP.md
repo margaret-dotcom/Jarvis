@@ -20,6 +20,9 @@ make install
 cp .env.example .env
 ```
 
+The clone lands on `main`, which is the only branch and holds everything.
+No checkout step is needed.
+
 Edit `.env`. Set `JARVIS_HOME` to the full path of this folder and `JARVIS_TZ`
 to your timezone.
 
@@ -90,10 +93,13 @@ not configured, with the reason. Fix anything red before moving on.
 
 ## 5. Goals
 
-Open `goals/goals.yaml` and write three to six real goals with real numbers.
-The briefs measure you against this file every morning and evening. Examples
-of the shape are in the file. When you build your goals in DOM OS later, this
-file goes away and the briefs read `growth_goals` instead.
+`goals/goals.yaml` already holds five live goals taken from the targets DOM OS
+stores today: monthly ATWC revenue, weekly ATWC sessions, monthly QCA sales,
+monthly QCA collections, and the 40 percent gross profit floor. Their targets
+are paths into DOM OS, so changing a target there changes the brief. Add any
+personal goal to the file with `metric: manual` and the evening summary will
+ask you for the number. When you build goals inside DOM OS, the briefs will
+read those instead.
 
 ## 6. Hermes and WhatsApp
 
