@@ -23,7 +23,7 @@ Load jarvis-core first. This job is quiet by design. Margaret should hear from i
 
    If it prints INVALID, do not commit. Report the first error line.
 
-3. Check sources. Load today.json and list every entry in `sources[]` with `status` of `error`. Names are `gmail:<email>`, `gcal:<email>`, `asana`, `airtable_atwc`, `airtable_qca`, `goals`, `brain`. Ignore `not_configured` (that is a setup choice, not a failure) unless it changed since the last run.
+3. Check sources. Load today.json and list every entry in `sources[]` with `status` of `error`. Names are `gmail:<email>`, `gcal:<email>`, `domos_tasks`, `domos_inbox`, `domos_atwc`, `domos_qca`, `goals`, `brain`. Ignore `not_configured` (that is a setup choice, not a failure) unless it changed since the last run.
 
 4. Publish only if the file changed:
 
@@ -36,7 +36,7 @@ Load jarvis-core first. This job is quiet by design. Margaret should hear from i
 ## What to deliver
 
 - Everything worked, or nothing changed: reply with exactly `[SILENT]` on its own line. Nothing is sent, output is still saved.
-- A source is in `error`, validation failed, or push failed: one to three plain lines. Name the source or step, quote the one-line detail from `sources[].detail` or the command's stderr, and say what the dashboard is showing meanwhile ("dashboard still shows the 9 AM data"). No fix instructions unless the detail names one, such as an expired Google token, in which case: "Run python -m collectors.google_auth to reconnect."
+- A source is in `error`, validation failed, or push failed: one to three plain lines. Name the source or step, quote the one-line detail from `sources[].detail` or the command's stderr, and say what the dashboard is showing meanwhile ("dashboard still shows the 9 AM data"). No fix instructions unless the detail names one, such as an expired Google token, in which case: "Run python -m collectors.google_auth to reconnect." For a `domos_*` source, the usual causes are a missing `SUPABASE_URL` or `SUPABASE_SERVICE_ROLE_KEY` in `.env`, or Supabase not answering; quote the detail and never quote the key.
 
 Do not write headline, day_shape, yesterday, content, or goals in this job. Those belong to the morning brief, evening summary, and content scout. Do not touch the brain.
 

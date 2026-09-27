@@ -5,7 +5,7 @@ description: How Jarvis answers questions about Margaret's businesses, people, p
 
 # Brain recall
 
-Load jarvis-core first. The brain is `brain/library/` in the repo, indexed for full-text search.
+Load jarvis-core first. The brain is `brain/library/` in the repo, indexed for full-text search. It includes `brain/library/domos/`, a nightly mirror of the DOM OS knowledge base (about 200 entries Margaret wrote in her own app), so one search covers her notes here and her SOPs there.
 
 ## The rule
 
@@ -22,6 +22,8 @@ python -m brain.search "tongue tie intake" --area atwc
 Run two or three searches with different words when the first returns nothing useful: the topic, a name, a synonym. Each hit shows a path under `brain/library/`. Open the top hits and read them before writing anything.
 
 If search errors with a missing index, run `python -m brain.search --rebuild "your query"` once.
+
+A hit under `brain/library/domos/` is a DOM OS entry. Cite it by path like any note, and say it came from DOM OS. The mirror is as old as the last 9 PM sync; when the question is about something Margaret may have written in DOM OS today, add one live search: `python -m collectors.domos --query knowledge_search --q "deposit policy"`. Never edit a mirror file; corrections go into DOM OS.
 
 ## How to answer
 

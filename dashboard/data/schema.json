@@ -9,6 +9,7 @@
     "date": {"type": "string", "format": "date"},
     "timezone": {"type": "string"},
     "owner": {"type": "string"},
+    "domos_url": {"type": "string", "description": "Base URL of the DOM OS web app. Prefixed to every domos href so the page and the brief can link into it. Optional."},
     "headline": {"type": "string", "description": "One spoken sentence about the shape of the day. Written by the agent, empty if the collector ran alone."},
     "day_shape": {"type": "string", "enum": ["heavy", "normal", "open", ""]},
     "goals": {
@@ -77,10 +78,56 @@
     "tasks": {
       "type": "object",
       "properties": {
-        "source": {"type": "string"},
+        "source": {"type": "string", "description": "Where the tasks came from. domos for DOM OS dom_tasks."},
         "due_today": {"$ref": "#/$defs/tasks"},
         "overdue": {"$ref": "#/$defs/tasks"},
         "completed_yesterday": {"$ref": "#/$defs/tasks"}
+      }
+    },
+    "domos": {
+      "type": "object",
+      "description": "The DOM OS inbox for the owner: open notifications, end of week reports waiting on a reply, and today's DOM OS events. Written by collectors/domos_inbox.",
+      "properties": {
+        "notifications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title"],
+            "properties": {
+              "title": {"type": "string"},
+              "kind": {"type": "string"},
+              "href": {"type": "string", "description": "Path inside DOM OS. Prefix with domos_url to open it."},
+              "due_date": {"type": ["string", "null"]}
+            }
+          }
+        },
+        "eow_pending": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["employee", "week_end"],
+            "properties": {
+              "employee": {"type": "string"},
+              "week_end": {"type": "string"},
+              "submitted_at": {"type": ["string", "null"]}
+            }
+          }
+        },
+        "events_today": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title"],
+            "properties": {
+              "title": {"type": "string"},
+              "starts_at": {"type": ["string", "null"]},
+              "ends_at": {"type": ["string", "null"]},
+              "all_day": {"type": "boolean"},
+              "kind": {"type": "string"},
+              "done": {"type": "boolean"}
+            }
+          }
+        }
       }
     },
     "businesses": {
@@ -127,7 +174,28 @@
                   }
                 }
               }
-            }
+            },
+            "pipeline": {
+              "type": "object",
+              "description": "From qca_pipeline_jobs: open Leads and Prospects and the sum of their estimates.",
+              "properties": {
+                "leads": {"type": "integer"},
+                "prospects": {"type": "integer"},
+                "estimate_total": {"type": "number"}
+              }
+            },
+            "sales_month": {
+              "type": "object",
+              "description": "From sales_daily_logs, summed over the current month.",
+              "properties": {
+                "touches": {"type": "integer"},
+                "inspections": {"type": "integer"},
+                "estimates": {"type": "integer"},
+                "sold": {"type": "integer"},
+                "sold_amount": {"type": "number"}
+              }
+            },
+            "profit_alerts_recent": {"type": "integer", "description": "Count of profit_alerts flagged in the last 7 days."}
           }
         }
       }

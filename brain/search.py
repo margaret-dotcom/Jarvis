@@ -123,7 +123,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="python -m brain.search", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("query", nargs="?", help="words to look for")
-    p.add_argument("--area", choices=AREAS, help="limit to one area")
+    p.add_argument("--area", choices=AREAS + ["domos"], help="limit to one area (domos is the DOM OS mirror)")
     p.add_argument("--limit", type=int, default=10, help="how many results (default 10)")
     p.add_argument("--rebuild", action="store_true", help="reindex the whole library first")
     return p

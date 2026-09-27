@@ -37,8 +37,8 @@ Read the newest file if its date is today. Extract the "Needs you" items and the
 
 For each morning "Needs you" item decide, from data only:
 
-- done: the task is in `tasks.completed_yesterday` or no longer in due or overdue; the thread is no longer in `email.needs_reply`; the meeting happened.
-- slipped: still in `needs_reply` or `overdue`, or the task is still due.
+- done: the task is in `tasks.completed_yesterday` or no longer in due or overdue; the thread is no longer in `email.needs_reply`; the EOW report is no longer in `domos.eow_pending`; the notification is gone from `domos.notifications`; the meeting happened.
+- slipped: still in `needs_reply`, `overdue`, `eow_pending`, or `notifications`, or the task is still due.
 - unknown: the data cannot tell. Say so plainly instead of guessing.
 
 Also list anything that got done today that was not on the morning list (from `tasks.completed_yesterday` after the refresh, which now means today).
@@ -47,10 +47,10 @@ Also list anything that got done today that was not on the morning list (from `t
 
 For each goal in today.json:
 
-- Airtable or Asana goals: the collectors set `current` and `status`. Report them.
+- DOM OS goals (`metric: domos`): the collectors set `current` and `status`. Report them.
 - Manual goals (check `metric: manual` in `goals/goals.yaml`): look in memory for a line `goal <id>: current <number> on <today>`. If found, use it. If not, ask Margaret in the delivery message, one goal per line, one line each, answerable with a number: "QCA Q4 revenue: what is the number today?" Ask about at most 3 goals per evening; pick the ones with the nearest due date.
 
-When Margaret answers (in Telegram, in whatever session receives it), record it as jarvis-core section 9 says: write `current`, `status`, and a `note` through `write_today.py`, then save the memory line. Decide `status` by simple arithmetic: on pace for the due date is on_track, within 15 percent of pace is at_risk, further behind is behind, at or past target is done.
+When Margaret answers (in WhatsApp, in whatever session receives it), record it as jarvis-core section 9 says: write `current`, `status`, and a `note` through `write_today.py`, then save the memory line. Decide `status` by simple arithmetic: on pace for the due date is on_track, within 15 percent of pace is at_risk, further behind is behind, at or past target is done.
 
 ## 4b. The daily review, four prompts
 
@@ -63,7 +63,7 @@ Every evening the delivery ends with four prompts Margaret answers in one line e
 
 Write them exactly like that, numbered, after the goal questions. Do not answer them for her and do not skip them on a quiet day.
 
-When she replies (in Telegram, in whatever session receives it), that session saves her answers to `brain/library/personal/YYYY-MM-DD-daily-review.md` with today's date. Write the file directly, not through `brain.ingest`, so the four headings stay fixed:
+When she replies (in WhatsApp, in whatever session receives it), that session saves her answers to `brain/library/personal/YYYY-MM-DD-daily-review.md` with today's date. Write the file directly, not through `brain.ingest`, so the four headings stay fixed:
 
 ```
 ---
@@ -72,7 +72,7 @@ area: personal
 kind: note
 date: YYYY-MM-DD
 tags: [daily-review]
-source: Margaret, Telegram
+source: Margaret, WhatsApp
 ---
 
 ## Went well
@@ -125,7 +125,7 @@ If push fails twice, add one line to the summary saying the dashboard is stale a
 
 ## 8. Deliver
 
-Structure, plain text or light markdown, under 3500 characters:
+Structure, plain text with *bold* section names only, under 3000 characters for WhatsApp:
 
 - Date line, then one sentence on the day.
 - **Done**: each accomplished item, one line.

@@ -1,6 +1,6 @@
 ---
 name: weekly-review
-description: The Sunday 5:00 PM Jarvis job. Reads the week's evening summaries, daily reviews, dashboard history, goals, and the brain notes added that week, then writes Margaret's weekly review (wins, challenges, patterns, what to improve, next week's three things) as a note in brain/library/decisions, commits it, and delivers it to Telegram. Use when a cron job or Margaret asks for the weekly review or a look back at the week.
+description: The Sunday 5:00 PM Jarvis job. Reads the week's evening summaries, daily reviews, dashboard history, goals, and the brain notes added that week, then writes Margaret's weekly review (wins, challenges, patterns, what to improve, next week's three things) as a note in brain/library/decisions, commits it, and delivers it to WhatsApp. Use when a cron job or Margaret asks for the weekly review or a look back at the week.
 ---
 
 # Weekly review
@@ -30,7 +30,7 @@ PY
 
 Read each file. Pull the Done, Slipped, Goals, and Tomorrow lines.
 
-**Dashboard history.** `dashboard/data/history/YYYY-MM-DD.json`, one per day the collectors ran. For each day in the week read `day_shape`, `yesterday`, `goals`, `businesses.atwc.waitlist`, `businesses.qca.wip`, and the count of `calendar.events` by `business`. Missing days are missing; say how many you had.
+**Dashboard history.** `dashboard/data/history/YYYY-MM-DD.json`, one per day the collectors ran. For each day in the week read `day_shape`, `yesterday`, `goals`, `businesses.atwc.waitlist`, `businesses.qca.wip`, `businesses.qca.sales_month`, `businesses.qca.pipeline`, and the count of `calendar.events` by `business`. For a week total of sales or collections that the daily files do not give you, `python -m collectors.domos --query sales_month` is the one query allowed in this job. Missing days are missing; say how many you had.
 
 **Daily reviews.** `brain/library/personal/*-daily-review.md` dated this week. Her own words on what went well, what did not, lessons, gratitude. These outrank your inference about the week.
 
@@ -89,7 +89,7 @@ If push fails twice, say so in one line at the end of the delivery.
 
 ## 4. Deliver
 
-The same six sections, plain text or light markdown, under 3500 characters. Bold section names. If you must cut, shorten Wins and Challenges to three lines each and keep the three things whole. Close with one observing line about the week. No cheer, no command, no apology for thin data. Thin data gets one plain line: "Only 3 of 7 days had an evening summary."
+The same six sections, plain text with *bold* section names, under 3000 characters for WhatsApp. Bold section names. If you must cut, shorten Wins and Challenges to three lines each and keep the three things whole. Close with one observing line about the week. No cheer, no command, no apology for thin data. Thin data gets one plain line: "Only 3 of 7 days had an evening summary."
 
 HIPAA: aggregate ATWC numbers only, no patient identifiers anywhere, including quotes from her daily reviews (drop a name if she wrote one).
 

@@ -17,7 +17,7 @@ You find out. You start from what Margaret already knows, add what the web can c
 
 ## Inputs you read
 
-- Brain search results pasted into your context, or run yourself when you have the repo path: `python -m brain.search "query" --limit 8`, then again with `--area` (atwc, qca, personal, people, decisions, marketing) and with two alternate phrasings.
+- Brain search results pasted into your context, or run yourself when you have the repo path: `python -m brain.search "query" --limit 8`, then again with `--area` (atwc, qca, personal, people, decisions, marketing, domos) and with two alternate phrasings. Hits under `brain/library/domos/` are Margaret's DOM OS knowledge entries, mirrored nightly; cite them as DOM OS. For anything she may have written in DOM OS today: `python -m collectors.domos --query knowledge_search --q "words"`.
 - The notes themselves: open every top hit and read it before citing it.
 - Web results via web_search, opened and read, primary sources first: state agencies, manufacturers, professional associations, peer reviewed summaries, the competitor's own page. News and forums last, labeled as such.
 - x_search when available, for what people are asking in the last two weeks. Label it as chatter.

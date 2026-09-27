@@ -1,6 +1,6 @@
 # hermes/
 
-The Hermes Agent layer of Jarvis. Hermes Agent (Nous Research, v0.19) is the runtime: it holds the model, the tools, the Telegram gateway, the cron scheduler, and the memory. This folder gives it a persona, a set of skills, and a schedule. Everything else in the repo (collectors, brain, dashboard) is plain Python that the skills call.
+The Hermes Agent layer of Jarvis. Hermes Agent (Nous Research, v0.19) is the runtime: it holds the model, the tools, the messaging gateway (WhatsApp for Jarvis), the cron scheduler, and the memory. This folder gives it a persona, a set of skills, and a schedule. Everything else in the repo (collectors, brain, dashboard) is plain Python that the skills call.
 
 ## How the pieces fit
 
@@ -15,7 +15,7 @@ The Hermes Agent layer of Jarvis. Hermes Agent (Nous Research, v0.19) is the run
 | Config | `config.snippet.yaml` | Timezone, delegation limits, cron delivery settings, a commented MCP example. Merged into Hermes config.yaml by install.sh. |
 | Installer | `install.sh` | Symlinks, persona, config merge, cron registration. Idempotent. |
 
-Data flow on a weekday: at 6:00 the morning brief runs `python -m collectors.build_today`, reads `dashboard/data/today.json`, writes `headline` and `day_shape` back through `write_today.py`, commits and pushes so the dashboard updates, and sends the brief to Telegram. Hourly from 8 to 18 the refresh job re-pulls and pushes silently. At 12:00 Monday, Wednesday, Friday the scout fills `content.recommendations`. At 19:00 the evening summary writes `yesterday`, asks for manual goal numbers and the four review prompts, files the brain inbox, and pushes. At 21:00 the sweep files anything still in `brain/inbox`. Sunday at 17:00 the weekly review reads the week and writes a note into `brain/library/decisions`.
+Data flow on a weekday: at 6:00 the morning brief runs `python -m collectors.build_today`, reads `dashboard/data/today.json`, writes `headline` and `day_shape` back through `write_today.py`, commits and pushes so the dashboard updates, and sends the brief to WhatsApp. Hourly from 8 to 18 the refresh job re-pulls and pushes silently. At 12:00 Monday, Wednesday, Friday the scout fills `content.recommendations`. At 19:00 the evening summary writes `yesterday`, asks for manual goal numbers and the four review prompts, files the brain inbox, and pushes. At 21:00 the sweep mirrors DOM OS knowledge into `brain/library/domos` and files anything still in `brain/inbox`. Sunday at 17:00 the weekly review reads the week and writes a note into `brain/library/decisions`.
 
 ## Install
 
@@ -31,7 +31,7 @@ What it does, in order:
 2. Copies `SOUL.md` to `~/.hermes/SOUL.md` if none exists or the existing one is the stock Hermes text. Otherwise it prints a diff and asks. `--yes` answers yes.
 3. Deep-merges `config.snippet.yaml` into `~/.hermes/config.yaml`, with `timezone` set from `JARVIS_TZ`. Backs the file up first. Never deletes a key.
 4. Registers each job in `cron/jobs.yaml` with `hermes cron create`, skipping names that already exist in `hermes cron list`.
-5. Prints the next steps: `hermes model`, `hermes gateway` for Telegram pairing, `python -m collectors.google_auth`.
+5. Prints the next steps: `hermes model`, `hermes whatsapp` for WhatsApp pairing, `python -m collectors.google_auth`, and the DOM OS values that go in `.env`.
 
 Flags: `--skip-cron` does steps 1 to 3 without needing `hermes` on PATH. `--profile NAME` targets a Hermes profile (see below). `--uninstall` removes the symlinks it made and the cron jobs by name, and leaves SOUL.md and config.yaml alone.
 
@@ -60,9 +60,9 @@ hermes cron run <job_id>
 hermes cron runs <job_id>
 ```
 
-The output lands in `~/.hermes/cron/output/<job_id>/<timestamp>.md` whether or not delivery worked, so you can read a brief before Telegram is paired.
+The output lands in `~/.hermes/cron/output/<job_id>/<timestamp>.md` whether or not delivery worked, so you can read a brief before WhatsApp is paired.
 
-To run a skill in chat without cron, start `hermes` (or `hermes -p jarvis`) and type `/morning-brief` or "run the morning brief". The same skill loads, the same steps run, and the output shows in the terminal instead of Telegram. That is the fastest way to check a change to a SKILL.md.
+To run a skill in chat without cron, start `hermes` (or `hermes -p jarvis`) and type `/morning-brief` or "run the morning brief". The same skill loads, the same steps run, and the output shows in the terminal instead of WhatsApp. That is the fastest way to check a change to a SKILL.md.
 
 To check the write-back path alone:
 
@@ -71,13 +71,17 @@ python -m collectors.build_today
 python hermes/skills/jarvis-core/scripts/write_today.py --check
 ```
 
-## Talk to Jarvis on Telegram
+## Talk to Jarvis on WhatsApp
 
-1. Create a bot with Telegram's BotFather and copy the token.
-2. Run `hermes gateway` and follow the setup prompt for Telegram; it stores the token in `~/.hermes/.env` and pairs your chat as the home channel.
-3. Message the bot. Jarvis answers as the persona in SOUL.md with every skill available.
+Hermes reaches WhatsApp through a small Node.js bridge that signs in to WhatsApp Web as you. Node.js has to be installed on the machine.
 
-Cron deliveries go to that home channel. `config.snippet.yaml` turns on `cron.mirror_delivery`, so when you reply to a brief, Jarvis has the brief in context. Things you can say:
+1. Run `hermes whatsapp`. It shows a QR code. On your phone open WhatsApp, Linked devices, Link a device, and scan it.
+2. That writes `WHATSAPP_ENABLED=true` into `~/.hermes/.env`. The default `WHATSAPP_MODE` is self-chat, so Jarvis talks to you in your own "message yourself" chat and nobody else sees it. `WHATSAPP_ALLOWED_USERS` in the same file is the allowlist if you ever want another number to reach Jarvis.
+3. Start `hermes gateway`. It launches the bridge itself. Message yourself in WhatsApp and Jarvis answers as the persona in SOUL.md with every skill available.
+
+If you would rather not link your personal phone, `hermes whatsapp-cloud` sets up the WhatsApp Business Cloud API instead, which needs a Meta developer app. Hermes can also deliver to Telegram, Discord, Slack and Signal; Jarvis uses none of them.
+
+Cron deliveries go to that WhatsApp chat (`deliver: whatsapp` in `cron/jobs.yaml`). `config.snippet.yaml` turns on `cron.mirror_delivery`, so when you reply to a brief, Jarvis has the brief in context. Messages stay under about 3000 characters, plain text with simple *bold* only, because that is what WhatsApp renders cleanly. Things you can say:
 
 - "Remember this: ..." or "Note for QCA: ..." files a note (brain-ingest).
 - "What did we decide about deposits?" searches the brain first and cites the note (brain-recall).
@@ -109,7 +113,8 @@ Revert anything that reads wrong. The writing rules in jarvis-core apply to patc
 | Memory Jarvis keeps across sessions | `~/.hermes/memories/MEMORY.md`, `USER.md` |
 | Installed skills (symlinks) | `~/.hermes/skills/<name>` pointing into `hermes/skills/` here |
 | Dashboard data | `dashboard/data/today.json`, daily copies in `dashboard/data/history/` (local only) |
-| Brain | `brain/library/<area>/`, index in `brain/INDEX.md`, daily reviews in `brain/library/personal/`, weekly reviews in `brain/library/decisions/` |
+| Business data | DOM OS (Margaret's Next.js app on Vercel, Supabase Postgres behind it). The collectors read it with `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and `DOMOS_OWNER_EMAIL` from the repo `.env`. Skills query it with `python -m collectors.domos --query <name>`. |
+| Brain | `brain/library/<area>/`, index in `brain/INDEX.md`, daily reviews in `brain/library/personal/`, weekly reviews in `brain/library/decisions/`, DOM OS knowledge mirror in `brain/library/domos/` (read-only, rebuilt by `python -m brain.domos_sync`) |
 | Logs | `hermes logs` |
 
 For a profile, replace `~/.hermes` with `~/.hermes/profiles/<name>`.

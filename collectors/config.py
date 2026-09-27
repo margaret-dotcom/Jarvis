@@ -219,7 +219,7 @@ def token_path(email: str) -> Path:
 def business_from_text(text: str, default: str = "other") -> str:
     """Guess a business tag from free text such as a project name.
 
-    Used for Asana projects, which carry no business field of their own. The
+    Used for names that carry no business tag of their own. The
     keyword list is short on purpose. Anything unmatched is tagged default.
     """
     lowered = (text or "").lower()

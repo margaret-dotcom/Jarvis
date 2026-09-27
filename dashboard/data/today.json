@@ -3,6 +3,7 @@
   "date": "2026-09-28",
   "timezone": "America/Chicago",
   "owner": "Margaret",
+  "domos_url": "https://dom-os.example",
   "headline": "Two overlapping calls late morning, otherwise a normal Monday with QCA needing the most attention.",
   "day_shape": "normal",
   "goals": [
@@ -51,8 +52,9 @@
   ],
   "calendar": {
     "accounts": [
+      {"email": "stochmt@gmail.com", "business": "personal", "label": "Personal calendar"},
       {"email": "margaret@mytherapywellness.com", "business": "atwc", "label": "ATWC calendar"},
-      {"email": "margaret@qcaroofing.example", "business": "qca", "label": "QCA calendar"}
+      {"email": "margarets@qcaroofing.com", "business": "qca", "label": "QCA calendar"}
     ],
     "events": [
       {
@@ -89,7 +91,7 @@
       },
       {
         "id": "ev-003",
-        "account": "margaret@qcaroofing.example",
+        "account": "margarets@qcaroofing.com",
         "business": "qca",
         "title": "Site walk, Pinecrest Drive re-roof",
         "start": "2026-09-28T10:30:00-05:00",
@@ -120,7 +122,7 @@
       },
       {
         "id": "ev-005",
-        "account": "margaret@qcaroofing.example",
+        "account": "margarets@qcaroofing.com",
         "business": "qca",
         "title": "Permit office follow-up, Oakridge HOA",
         "start": "2026-09-28T13:00:00-05:00",
@@ -136,7 +138,7 @@
       },
       {
         "id": "ev-006",
-        "account": "margaret@mytherapywellness.com",
+        "account": "stochmt@gmail.com",
         "business": "personal",
         "title": "Dentist, kids",
         "start": "2026-09-28T16:00:00-05:00",
@@ -166,7 +168,7 @@
       },
       {
         "id": "ev-008",
-        "account": "margaret@qcaroofing.example",
+        "account": "margarets@qcaroofing.com",
         "business": "qca",
         "title": "Riverbend Supply, shingle pricing for Q4",
         "start": "2026-09-29T14:00:00-05:00",
@@ -183,8 +185,9 @@
   },
   "email": {
     "accounts": [
+      {"email": "stochmt@gmail.com", "business": "personal", "label": "Personal inbox"},
       {"email": "margaret@mytherapywellness.com", "business": "atwc", "label": "ATWC inbox"},
-      {"email": "margaret@qcaroofing.example", "business": "qca", "label": "QCA inbox"}
+      {"email": "margarets@qcaroofing.com", "business": "qca", "label": "QCA inbox"}
     ],
     "counts": {"unread": 23, "needs_reply": 4, "waiting_on": 2},
     "needs_reply": [
@@ -201,7 +204,7 @@
       },
       {
         "id": "th-102",
-        "account": "margaret@qcaroofing.example",
+        "account": "margarets@qcaroofing.com",
         "business": "qca",
         "from": "Tom Alvarez",
         "subject": "Re: Pinecrest Drive estimate revision",
@@ -236,7 +239,7 @@
     "waiting_on": [
       {
         "id": "th-201",
-        "account": "margaret@qcaroofing.example",
+        "account": "margarets@qcaroofing.com",
         "business": "qca",
         "from": "Riverbend Supply",
         "subject": "Quote 4471, metal flashing",
@@ -259,20 +262,34 @@
     ]
   },
   "tasks": {
-    "source": "Asana",
+    "source": "domos",
     "due_today": [
-      {"id": "t-1", "title": "Approve October staff schedule", "project": "ATWC Ops", "business": "atwc", "due": "2026-09-28", "link": "https://app.asana.com/0/example/t-1"},
-      {"id": "t-2", "title": "Send revised Pinecrest estimate", "project": "QCA Sales", "business": "qca", "due": "2026-09-28", "link": "https://app.asana.com/0/example/t-2"},
-      {"id": "t-3", "title": "Record intro for the feeding workshop", "project": "ATWC Marketing", "business": "atwc", "due": "2026-09-28", "link": "https://app.asana.com/0/example/t-3"}
+      {"id": "t-1", "title": "Approve October staff schedule", "project": "Operations", "business": "atwc", "due": "2026-09-28", "link": "https://dom-os.example/tasks/t-1"},
+      {"id": "t-2", "title": "Send revised Pinecrest estimate", "project": "Sales", "business": "qca", "due": "2026-09-28", "link": "https://dom-os.example/tasks/t-2"},
+      {"id": "t-3", "title": "Record intro for the feeding workshop", "project": "Marketing", "business": "atwc", "due": "2026-09-28", "link": "https://dom-os.example/tasks/t-3"}
     ],
     "overdue": [
-      {"id": "t-4", "title": "Sign the Oakridge HOA change order", "project": "QCA Jobs", "business": "qca", "due": "2026-09-25", "link": "https://app.asana.com/0/example/t-4"},
-      {"id": "t-5", "title": "Reply to the pelvic floor CEU vendor", "project": "ATWC Ops", "business": "atwc", "due": "2026-09-26", "link": "https://app.asana.com/0/example/t-5"}
+      {"id": "t-4", "title": "Sign the Oakridge HOA change order", "project": "Jobs", "business": "qca", "due": "2026-09-25", "link": "https://dom-os.example/tasks/t-4"},
+      {"id": "t-5", "title": "Reply to the pelvic floor CEU vendor", "project": "Operations", "business": "atwc", "due": "2026-09-26", "link": "https://dom-os.example/tasks/t-5"}
     ],
     "completed_yesterday": [
-      {"id": "t-6", "title": "Pay Riverbend invoice 8812", "project": "QCA Finance", "business": "qca", "due": "2026-09-27", "link": "https://app.asana.com/0/example/t-6"},
-      {"id": "t-7", "title": "Post the September newsletter", "project": "ATWC Marketing", "business": "atwc", "due": "2026-09-27", "link": "https://app.asana.com/0/example/t-7"},
-      {"id": "t-8", "title": "Order OT swing hardware", "project": "ATWC Ops", "business": "atwc", "due": null, "link": "https://app.asana.com/0/example/t-8"}
+      {"id": "t-6", "title": "Pay Riverbend invoice 8812", "project": "Finance", "business": "qca", "due": "2026-09-27", "link": "https://dom-os.example/tasks/t-6"},
+      {"id": "t-7", "title": "Post the September newsletter", "project": "Marketing", "business": "atwc", "due": "2026-09-27", "link": "https://dom-os.example/tasks/t-7"},
+      {"id": "t-8", "title": "Order OT swing hardware", "project": "Operations", "business": "atwc", "due": null, "link": "https://dom-os.example/tasks/t-8"}
+    ]
+  },
+  "domos": {
+    "notifications": [
+      {"title": "Halvorsen job flagged: cost is 71 percent of contract at 55 percent invoiced", "kind": "profit_alert", "href": "/qca/wip/2418", "due_date": "2026-09-28"},
+      {"title": "Pinecrest Drive estimate revision requested by the customer", "kind": "task", "href": "/tasks/t-2", "due_date": "2026-09-28"},
+      {"title": "Two waitlist families passed 21 days without a first appointment", "kind": "waitlist", "href": "/atwc/waitlist", "due_date": null}
+    ],
+    "eow_pending": [
+      {"employee": "Kelsey Moran", "week_end": "2026-09-26", "submitted_at": "2026-09-26T17:40:00-05:00"},
+      {"employee": "Tom Alvarez", "week_end": "2026-09-26", "submitted_at": "2026-09-27T08:15:00-05:00"}
+    ],
+    "events_today": [
+      {"title": "Payroll approval window closes", "starts_at": "2026-09-28T15:00:00-05:00", "ends_at": "2026-09-28T17:00:00-05:00", "all_day": false, "kind": "deadline", "done": false}
     ]
   },
   "businesses": {
@@ -295,10 +312,23 @@
         "uncollected": 132400,
         "avg_gp_pct": 43.8,
         "jobs_below_40_gp": [
-          {"job": 2418, "customer": "Halvorsen residence", "gp_pct": 31.2, "status": "Scheduled/In Progress"},
-          {"job": "2422", "customer": "Oakridge HOA clubhouse", "gp_pct": 36.9, "status": "Invoiced-Completed"}
+          {"job": 2418, "customer": "Halvorsen residence", "gp_pct": 31.2, "status": "In Progress"},
+          {"job": "2422", "customer": "Oakridge HOA clubhouse", "gp_pct": 36.9, "status": "Invoiced"}
         ]
-      }
+      },
+      "pipeline": {
+        "leads": 9,
+        "prospects": 4,
+        "estimate_total": 187400
+      },
+      "sales_month": {
+        "touches": 118,
+        "inspections": 22,
+        "estimates": 11,
+        "sold": 6,
+        "sold_amount": 86300
+      },
+      "profit_alerts_recent": 2
     }
   },
   "brain": {
@@ -368,13 +398,17 @@
     ]
   },
   "sources": [
-    {"name": "Google Calendar", "status": "ok", "detail": "2 accounts", "fetched_at": "2026-09-28T06:01:40-05:00"},
-    {"name": "Gmail", "status": "ok", "detail": "2 accounts", "fetched_at": "2026-09-28T06:01:52-05:00"},
-    {"name": "Asana", "status": "ok", "detail": "3 projects", "fetched_at": "2026-09-28T06:01:55-05:00"},
-    {"name": "ATWC waitlist", "status": "ok", "detail": "Airtable, counts only", "fetched_at": "2026-09-28T06:01:58-05:00"},
-    {"name": "QCA WIP", "status": "error", "detail": "Airtable rate limit, showing Friday's numbers", "fetched_at": "2026-09-26T06:02:00-05:00"},
-    {"name": "Second brain", "status": "ok", "detail": "index rebuilt", "fetched_at": "2026-09-28T06:02:03-05:00"},
-    {"name": "Content scout", "status": "ok", "detail": "3 picks from 41 scanned", "fetched_at": "2026-09-28T05:40:00-05:00"},
-    {"name": "Goals", "status": "not_configured", "detail": "showing sample goals until goals/goals.yaml has real ones"}
+    {"name": "gmail:stochmt@gmail.com", "status": "ok", "detail": "12 unread", "fetched_at": "2026-09-28T06:01:40-05:00"},
+    {"name": "gmail:margaret@mytherapywellness.com", "status": "ok", "detail": "8 unread", "fetched_at": "2026-09-28T06:01:44-05:00"},
+    {"name": "gmail:margarets@qcaroofing.com", "status": "ok", "detail": "3 unread", "fetched_at": "2026-09-28T06:01:48-05:00"},
+    {"name": "gcal:stochmt@gmail.com", "status": "ok", "detail": "1 event", "fetched_at": "2026-09-28T06:01:50-05:00"},
+    {"name": "gcal:margaret@mytherapywellness.com", "status": "ok", "detail": "4 events", "fetched_at": "2026-09-28T06:01:52-05:00"},
+    {"name": "gcal:margarets@qcaroofing.com", "status": "ok", "detail": "3 events", "fetched_at": "2026-09-28T06:01:54-05:00"},
+    {"name": "domos_tasks", "status": "ok", "detail": "8 tasks", "fetched_at": "2026-09-28T06:01:55-05:00"},
+    {"name": "domos_inbox", "status": "ok", "detail": "3 notifications, 2 EOW reports", "fetched_at": "2026-09-28T06:01:56-05:00"},
+    {"name": "domos_atwc", "status": "ok", "detail": "counts only", "fetched_at": "2026-09-28T06:01:58-05:00"},
+    {"name": "domos_qca", "status": "error", "detail": "Supabase timed out, showing Friday's numbers", "fetched_at": "2026-09-26T06:02:00-05:00"},
+    {"name": "brain", "status": "ok", "detail": "index rebuilt", "fetched_at": "2026-09-28T06:02:03-05:00"},
+    {"name": "goals", "status": "not_configured", "detail": "showing sample goals until goals/goals.yaml has real ones"}
   ]
 }

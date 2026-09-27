@@ -5,7 +5,7 @@ Your second brain. Anything you want to keep ends up here as a plain markdown fi
 Three folders matter:
 
 - `inbox/` is where things land. Drop anything here. It is git-ignored, so it is always safe to leave files in it.
-- `library/` is where filed notes live, one folder per area. This only grows. Nothing here gets deleted by the tools.
+- `library/` is where filed notes live, one folder per area. This only grows. Nothing here gets deleted by the tools, with one exception: `library/domos/` is a mirror of your DOM OS knowledge base and the sync rewrites that folder (see below).
 - `.processed/` is where the originals go after filing, sorted by month. Git-ignored. It is your undo button if an ingest went wrong.
 
 Two generated files sit next to them. `INDEX.md` is a table of contents you can read on GitHub. `.index.sqlite` is a full text search index. Both are rebuilt from the markdown every time you ingest, so you can delete either one without losing anything.
@@ -47,6 +47,7 @@ Areas:
 - `people` for one file per person you deal with. See `library/people/README.md`.
 - `decisions` for anything you decided and want to be able to look up later.
 - `marketing` for content ideas, hooks, reels worth studying, captions, audience notes.
+- `domos` is not a filing area. It is the DOM OS mirror described below, and ingest never puts anything there.
 
 ## Frontmatter fields
 
@@ -74,11 +75,27 @@ status: raw
 - `summary`: the first 300 characters of the body, cleaned up. The agents may rewrite this later with something better.
 - `status`: `raw` when filed. Agents or you can change it to `reviewed` or `done`. Person files also carry `updated`.
 
+## The DOM OS mirror
+
+Your DOM OS app has its own knowledge base, about 200 SOPs and notes in its `knowledge_entries` table. So that one search covers both, Jarvis copies every active entry into `library/domos/<business>/<slug>.md`:
+
+```
+python -m brain.domos_sync
+python -m brain.domos_sync --dry-run
+```
+
+What it does: reads the entries from the DOM OS database (it needs `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in `.env`; without them it prints one line and stops), writes one note per entry with `source: domos`, `external_id`, `kind: sop`, `business`, `category`, `status: mirrored`, and the entry text as the body, deletes any mirror note whose entry is no longer active, then rebuilds `INDEX.md` and the search index. It only ever writes inside `library/domos/`. It prints one line with the counts (added, updated, unchanged, removed).
+
+The 9 PM `brain-ingest-sweep` cron job runs it before the inbox sweep, so what you write in DOM OS during the day is searchable here the next morning. Run it by hand any time you want the mirror fresh now.
+
+Do not edit the mirror. Change the entry in DOM OS and rerun the sync. Search results show these notes under `brain/library/domos/`, and `--area domos` limits a search to them.
+
 ## Searching
 
 ```
 python -m brain.search "permit"
 python -m brain.search "intake calls" --area atwc --limit 5
+python -m brain.search "deposit policy" --area domos
 python -m brain.search --rebuild
 ```
 

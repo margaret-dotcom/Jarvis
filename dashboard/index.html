@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jarvis Today</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f5fd0'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23fff'/%3E%3C/svg%3E">
-<meta name="description" content="One page for the day: calendar, mail, tasks, both businesses, and what happened yesterday.">
+<meta name="description" content="One page for the day: calendar, mail, tasks and the DOM OS inbox, both businesses, and what happened yesterday.">
 <style>
   :root {
     color-scheme: light dark;
@@ -216,6 +216,7 @@
   .recent .path { color: var(--faint); font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
   .task.overdue .due, .task.overdue a { color: var(--bad); }
   .task.done { color: var(--muted); }
+  .domos .task .tag { flex: none; }
 
   /* Stat tiles */
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px 14px; }
@@ -293,11 +294,23 @@
     return el("span", { class: cls, text: text });
   }
   function sourceLabel(name) {
-    var map = { asana: "Asana", airtable_atwc: "ATWC waitlist", airtable_qca: "QCA WIP", goals: "Goals", brain: "Second brain", content: "Content scout" };
+    var map = { domos_tasks: "DOM OS tasks", domos_inbox: "DOM OS inbox", domos_atwc: "ATWC waitlist", domos_qca: "QCA numbers", goals: "Goals", brain: "Second brain", content: "Content scout" };
     var parts = name.split(":");
     if (parts.length === 2 && parts[0] === "gmail") return "Gmail, " + parts[1];
     if (parts.length === 2 && parts[0] === "gcal") return "Calendar, " + parts[1];
     return map[name] || name;
+  }
+  function taskSourceLabel(source) {
+    if (!source) return "";
+    return { domos: "DOM OS" }[String(source).toLowerCase()] || source;
+  }
+  function domosLink(base, href, text, cls) {
+    /* href is a path inside DOM OS. Only build a link when the file gives us the base URL. */
+    if (base && href && /^https?:\/\//i.test(base)) {
+      var url = /^https?:\/\//i.test(href) ? href : base.replace(/\/+$/, "") + "/" + String(href).replace(/^\/+/, "");
+      return safeLink(url, text, cls);
+    }
+    return el("span", { class: cls, text: text });
   }
   function nonEmpty(arr) { return Array.isArray(arr) && arr.length > 0; }
   function isNum(n) { return typeof n === "number" && isFinite(n); }
@@ -520,11 +533,54 @@
     if (t.due) row.appendChild(el("span", { class: "due", text: fmtShortDate(t.due) }));
     return row;
   }
+  function renderDomos(dm, base) {
+    if (!dm) return null;
+    var hasNotes = nonEmpty(dm.notifications), hasEow = nonEmpty(dm.eow_pending), hasEvents = nonEmpty(dm.events_today);
+    if (!hasNotes && !hasEow && !hasEvents) return null;
+    var card = el("div", { class: "card domos" });
+    card.appendChild(el("h2", { text: "DOM OS inbox" }));
+    if (hasNotes) {
+      dm.notifications.forEach(function (n) {
+        var row = el("div", { class: "task" });
+        row.appendChild(domosLink(base, n.href, n.title || "(no title)"));
+        if (n.kind) row.appendChild(el("span", { class: "tag", text: String(n.kind).replace(/_/g, " ") }));
+        if (n.due_date) row.appendChild(el("span", { class: "due", text: "due " + fmtShortDate(n.due_date) }));
+        card.appendChild(row);
+      });
+    }
+    if (hasEow) {
+      var lbl = el("div", { class: "small muted", text: "EOW reports waiting on you" });
+      if (hasNotes) lbl.style.marginTop = "10px";
+      card.appendChild(lbl);
+      dm.eow_pending.forEach(function (r) {
+        var row = el("div", { class: "task" });
+        row.appendChild(el("span", { text: r.employee || "" }));
+        if (r.week_end) row.appendChild(el("span", { class: "faint small", text: "week of " + fmtShortDate(r.week_end) }));
+        if (r.submitted_at) row.appendChild(el("span", { class: "due", text: "sent " + fmtShortDate(r.submitted_at) }));
+        card.appendChild(row);
+      });
+    }
+    if (hasEvents) {
+      var elbl = el("div", { class: "small muted", text: "DOM OS events today" });
+      if (hasNotes || hasEow) elbl.style.marginTop = "10px";
+      card.appendChild(elbl);
+      dm.events_today.forEach(function (ev) {
+        var row = el("div", { class: "task" + (ev.done ? " done" : "") });
+        row.appendChild(el("span", { text: ev.title || "" }));
+        if (ev.kind) row.appendChild(el("span", { class: "tag", text: String(ev.kind).replace(/_/g, " ") }));
+        var when = ev.all_day || !hasTime(ev.starts_at) ? "all day" : fmtTime(ev.starts_at);
+        if (when) row.appendChild(el("span", { class: "due", text: when }));
+        card.appendChild(row);
+      });
+    }
+    return card;
+  }
   function renderRight(d) {
     var email = d.email || {}, tasks = d.tasks || {};
     var hasEmail = nonEmpty(email.needs_reply) || nonEmpty(email.waiting_on);
     var hasTasks = nonEmpty(tasks.due_today) || nonEmpty(tasks.overdue) || nonEmpty(tasks.completed_yesterday);
-    if (!hasEmail && !hasTasks) return null;
+    var domosCard = renderDomos(d.domos, d.domos_url);
+    if (!hasEmail && !hasTasks && !domosCard) return null;
     var col = el("div");
 
     if (hasEmail) {
@@ -543,7 +599,7 @@
     if (hasTasks) {
       var tcard = el("div", { class: "card" });
       tcard.style.marginTop = hasEmail ? "16px" : "0";
-      tcard.appendChild(el("h2", { text: "Tasks" + (tasks.source ? " from " + tasks.source : "") }));
+      tcard.appendChild(el("h2", { text: "Tasks" + (tasks.source ? " from " + taskSourceLabel(tasks.source) : "") }));
       if (nonEmpty(tasks.overdue)) {
         tcard.appendChild(el("div", { class: "small muted", text: "Overdue" }));
         tasks.overdue.forEach(function (t) { tcard.appendChild(taskRow(t, "overdue")); });
@@ -562,6 +618,11 @@
         tcard.appendChild(det);
       }
       col.appendChild(tcard);
+    }
+
+    if (domosCard) {
+      domosCard.style.marginTop = (hasEmail || hasTasks) ? "16px" : "0";
+      col.appendChild(domosCard);
     }
     return col;
   }
@@ -597,6 +658,19 @@
     if (isNum(w.uncollected)) grid.appendChild(stat(fmtDollars(w.uncollected), "uncollected"));
     if ("avg_gp_pct" in w) grid.appendChild(stat(fmtPct(w.avg_gp_pct), "average gross profit"));
     card.appendChild(grid);
+    var p = b.pipeline || {}, s = b.sales_month || {};
+    var sales = el("div", { class: "stats" });
+    if (isNum(s.sold_amount)) sales.appendChild(stat(fmtDollars(s.sold_amount), "sold this month"));
+    if (isNum(s.sold)) sales.appendChild(stat(fmtNum(s.sold), "jobs sold"));
+    if (isNum(s.inspections)) sales.appendChild(stat(fmtNum(s.inspections), "inspections"));
+    if (isNum(p.leads)) sales.appendChild(stat(fmtNum(p.leads), "leads"));
+    if (isNum(p.prospects)) sales.appendChild(stat(fmtNum(p.prospects), "prospects"));
+    if (isNum(p.estimate_total)) sales.appendChild(stat(fmtDollars(p.estimate_total), "in estimates"));
+    if (isNum(b.profit_alerts_recent)) sales.appendChild(stat(fmtNum(b.profit_alerts_recent), "profit alerts, 7 days"));
+    if (sales.childNodes.length) {
+      card.appendChild(el("h3", { text: "Sales and pipeline" }));
+      card.appendChild(sales);
+    }
     if (nonEmpty(w.jobs_below_40_gp)) {
       var box = el("div", { class: "lowgp" });
       box.appendChild(el("div", { class: "small muted", text: "Below 40% gross profit" }));

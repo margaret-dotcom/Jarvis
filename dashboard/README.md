@@ -9,7 +9,9 @@ Two files do all the work.
 - `index.html` is the page. All the CSS and JavaScript live inside it. When it opens, it fetches `data/today.json` from the folder next to it, draws every section it finds data for, and skips any section that is empty. It fetches again every 15 minutes and every time you come back to the tab. The Refresh link at the bottom does the same thing by hand.
 - `data/today.json` is the data. The collectors write it once each morning. `data/schema.json` is the contract for what goes in it. Anything that writes today.json must produce a file that validates against the schema.
 
-The page never talks to Google, Airtable, or Asana itself. It only reads the JSON. That keeps the page safe to host anywhere and keeps every credential on the machine that runs the collectors.
+The page never talks to Google or DOM OS itself. It only reads the JSON. That keeps the page safe to host anywhere and keeps every credential, including the Supabase service key, on the machine that runs the collectors.
+
+Tasks on the page come from DOM OS (`tasks.source` is `domos`). The "DOM OS inbox" card shows open notifications and the end of week reports waiting on your reply. Each item links into DOM OS when today.json carries a `domos_url`; the collectors fill that from `DOMOS_URL` in `.env`.
 
 Times are shown in the `timezone` named inside today.json (the collectors set this from `JARVIS_TZ`, default America/Chicago).
 
@@ -34,7 +36,7 @@ Opening `index.html` straight from disk (double clicking it) works in Firefox. C
 
 `vercel.json` in this folder turns on clean URLs and sends `Cache-Control: no-cache` for `data/today.json`, so the browser always checks for a fresh copy before reusing one.
 
-The page is public at whatever URL Vercel gives you. The JSON holds your calendar, email subjects, and business numbers, so if you want it private, turn on Vercel's deployment protection for the project or put it behind your own login. The collectors never put patient names or contact details in the file, only counts.
+The page is public at whatever URL Vercel gives you. The JSON holds your calendar, email subjects, task titles, DOM OS notifications, and business numbers, so if you want it private, turn on Vercel's deployment protection for the project or put it behind your own login. The collectors never put patient names or contact details in the file, only counts.
 
 ## How the morning job updates it
 

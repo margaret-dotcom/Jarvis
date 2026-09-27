@@ -26,7 +26,7 @@ cron:
   # Clean deliveries. The brief carries its own date line; no job-name header
   # or "the agent cannot see this" footer around it.
   wrap_response: false
-  # Let Margaret reply to a brief in Telegram and have Jarvis see it in context.
+  # Let Margaret reply to a brief in WhatsApp and have Jarvis see it in context.
   mirror_delivery: true
   # Two jobs at once at most, so a slow collector run cannot stack up.
   max_parallel_jobs: 2
@@ -34,19 +34,26 @@ cron:
   # The weekly review reads the evening summaries from there.
   output_retention: 60
 
+# WhatsApp is not configured here. `hermes whatsapp` pairs the personal bridge
+# and writes WHATSAPP_ENABLED, WHATSAPP_MODE and WHATSAPP_ALLOWED_USERS into
+# ~/.hermes/.env. The gateway starts the bridge on its own. Node.js must be on
+# the machine for the bridge to run.
+
 # MCP servers give Jarvis direct tools for a service. Hermes has no built-in
-# Gmail or Calendar tool; the python collectors cover the briefs. Add a server
-# here when you want Jarvis to act on a service in conversation. Shape:
+# Gmail or Calendar tool; the python collectors cover the briefs, and
+# `python -m collectors.domos --query <name>` covers DOM OS reads. Add a server
+# here only when you want Jarvis to act on a service in conversation. Shape:
 #
 # mcp_servers:
-#   airtable:
+#   supabase:
 #     command: npx
-#     args: ["-y", "airtable-mcp-server"]
+#     args: ["-y", "@supabase/mcp-server-supabase@latest", "--read-only", "--project-ref=kgeynjpcqwgfnaudycht"]
 #     env:
-#       AIRTABLE_API_KEY: "${AIRTABLE_TOKEN}"      # read from ~/.hermes/.env
+#       SUPABASE_ACCESS_TOKEN: "${SUPABASE_ACCESS_TOKEN}"   # read from ~/.hermes/.env
 #   google-workspace:
 #     url: "https://example-workspace-mcp.invalid/mcp"   # replace with the server you choose
 #     auth: oauth
 #
 # Remove the leading "# " from the block you want, then rerun install.sh.
 # Check the package name and auth flow in that server's own README first.
+# Keep --read-only on the Supabase server. Jarvis never writes to DOM OS.

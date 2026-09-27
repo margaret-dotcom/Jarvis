@@ -167,7 +167,7 @@ home = os.environ["JARVIS_HOME"]
 for job in doc.get("jobs") or []:
     name = str(job["name"]).strip()
     schedule = str(job["schedule"]).strip()
-    deliver = str(job.get("deliver") or defaults.get("deliver") or "telegram")
+    deliver = str(job.get("deliver") or defaults.get("deliver") or "whatsapp")
     workdir = str(job.get("workdir") or defaults.get("workdir") or home).replace("$JARVIS_HOME", home)
     skills = ",".join(str(s) for s in (job.get("skills") or []))
     prompt = " ".join(str(job.get("prompt") or "").split())
@@ -345,9 +345,13 @@ fi
 step "Next steps"
 p=""; [ -n "$PROFILE" ] && p="-p $PROFILE "
 say "  1. Pick the model Jarvis runs on:        hermes ${p}model"
-say "  2. Pair Telegram for deliveries:          hermes ${p}gateway   (then message your bot; follow the pairing prompt)"
+say "  2. Pair WhatsApp for deliveries:          hermes ${p}whatsapp   (scan the QR code with your phone; briefs land in your own chat)"
+if ! command -v node >/dev/null 2>&1; then
+  say "     Node.js is not on PATH. The WhatsApp bridge needs it. Install Node.js before step 2."
+fi
 say "  3. Connect Google accounts for the collectors:  cd $JARVIS_HOME && python -m collectors.google_auth"
-say "  4. Fill goals/goals.yaml, then try a job:  hermes ${p}cron list   and   hermes ${p}cron run <job_id>"
-say "  5. Keep the gateway running so cron fires: hermes ${p}gateway install"
+say "  4. Put SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY and DOMOS_OWNER_EMAIL in $JARVIS_HOME/.env so the collectors can read DOM OS"
+say "  5. Fill goals/goals.yaml, then try a job:  hermes ${p}cron list   and   hermes ${p}cron run <job_id>"
+say "  6. Keep the gateway running so cron fires: hermes ${p}gateway install"
 say ""
 say "Skills are symlinked, so edits under $REPO_DIR/hermes/skills apply live. Commit them weekly."

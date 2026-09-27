@@ -1,6 +1,6 @@
 ---
 name: content-scout
-description: Jarvis's marketing and content scout, run three times a week. Finds recent videos and posts worth learning from for Margaret's two audiences (ATWC parents and adults, QCA homeowners and contractors), scores each on problem fit, her unique angle, and phone-reproducible format, writes up to 5 recommendations into today.json content, files the top 2 into the brain's marketing area, and sends the top 3 to Telegram. Use when a cron job or Margaret asks for content ideas, what is working on social, or what to film.
+description: Jarvis's marketing and content scout, run three times a week. Finds recent videos and posts worth learning from for Margaret's two audiences (ATWC parents and adults, QCA homeowners and contractors), scores each on problem fit, her unique angle, and phone-reproducible format, writes up to 5 recommendations into today.json content, files the top 2 into the brain's marketing area, and sends the top 3 to WhatsApp. Use when a cron job or Margaret asks for content ideas, what is working on social, or what to film.
 ---
 
 # Content scout
@@ -94,7 +94,7 @@ git diff --cached --quiet || git commit -m "content: $(date +%F)"
 git push
 ```
 
-Telegram message, under 1500 characters, the top 3:
+WhatsApp message, plain text with bare URLs, under 1500 characters, the top 3:
 
 - One line per pick: audience tag, title, platform, then the angle on the next line.
 - Close with one line: how many candidates you looked at and how many made the cut. If the YouTube key was missing or the module failed, say it here in one line.

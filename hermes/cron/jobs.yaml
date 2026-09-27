@@ -9,7 +9,9 @@
 # Every job loads jarvis-core first, then its own skill.
 
 defaults:
-  deliver: telegram
+  # whatsapp sends to the chat paired by `hermes whatsapp` (Margaret's own
+  # "message yourself" chat in self-chat mode).
+  deliver: whatsapp
   workdir: $JARVIS_HOME
 
 jobs:
@@ -59,8 +61,10 @@ jobs:
     schedule: "0 21 * * *"
     skills: [jarvis-core, brain-ingest]
     prompt: >
-      Run the 9 PM brain sweep. File everything left in brain/inbox, commit and
-      push the library. Reply [SILENT] if nothing was filed and nothing failed.
+      Run the 9 PM brain sweep. First run python -m brain.domos_sync so the
+      DOM OS knowledge mirror under brain/library/domos is current, then file
+      everything left in brain/inbox, commit and push the library. Reply
+      [SILENT] if nothing changed and nothing failed.
 
   - name: weekly-review
     schedule: "0 17 * * 0"
