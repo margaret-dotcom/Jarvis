@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jarvis Today</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f5fd0'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23fff'/%3E%3C/svg%3E">
+<meta name="description" content="One page for the day: calendar, mail, tasks, both businesses, and what happened yesterday.">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f4f4f1;
+    --card: #ffffff;
+    --text: #1c1c1a;
+    --muted: #6b6b66;
+    --faint: #9a9a94;
+    --border: #e2e2dd;
+    --track: #ecece8;
+    --accent: #2f5fd0;
+    --good: #0f8a3c;
+    --good-bg: #e6f4ea;
+    --warn: #b7791f;
+    --warn-bg: #fbf1dc;
+    --bad: #c93636;
+    --bad-bg: #fbe7e7;
+    --neutral: #8a8a84;
+    --neutral-bg: #eeeeea;
+    --tag-bg: #f0f0ec;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04);
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151514;
+      --card: #1e1e1c;
+      --text: #ecece8;
+      --muted: #a2a29b;
+      --faint: #74746e;
+      --border: #2c2c29;
+      --track: #2a2a27;
+      --accent: #7ea2f0;
+      --good: #4fc26f;
+      --good-bg: #17301f;
+      --warn: #e0a83a;
+      --warn-bg: #33290f;
+      --bad: #ef6b6b;
+      --bad-bg: #3a1c1c;
+      --neutral: #8f8f88;
+      --neutral-bg: #2a2a27;
+      --tag-bg: #2a2a27;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151514;
+    --card: #1e1e1c;
+    --text: #ecece8;
+    --muted: #a2a29b;
+    --faint: #74746e;
+    --border: #2c2c29;
+    --track: #2a2a27;
+    --accent: #7ea2f0;
+    --good: #4fc26f;
+    --good-bg: #17301f;
+    --warn: #e0a83a;
+    --warn-bg: #33290f;
+    --bad: #ef6b6b;
+    --bad-bg: #3a1c1c;
+    --neutral: #8f8f88;
+    --neutral-bg: #2a2a27;
+    --tag-bg: #2a2a27;
+    --shadow: none;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  /* Header */
+  .header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 18px; }
+  .header h1 { font-size: 22px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  .header .updated { color: var(--muted); font-size: 13px; margin-left: auto; white-space: nowrap; }
+  .headline { flex-basis: 100%; font-size: 17px; color: var(--text); margin: 0; }
+  .headline .shape { margin-left: 8px; vertical-align: middle; }
+
+  /* Cards and sections */
+  section { margin-bottom: 18px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  h2 {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  h3 {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin: 18px 0 8px;
+  }
+  .grid2 { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; align-items: start; }
+  .grid2.even { grid-template-columns: 1fr 1fr; }
+  .grid2 > *, .goals > *, .stats > *, .cols3 > * { min-width: 0; }
+  @media (max-width: 720px) {
+    .grid2, .grid2.even { grid-template-columns: 1fr; }
+    .header .updated { margin-left: 0; }
+  }
+  .muted { color: var(--muted); }
+  .faint { color: var(--faint); }
+  .small { font-size: 13px; }
+  .empty-note { color: var(--muted); font-size: 14px; margin: 0; }
+
+  /* Tags and pills */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    line-height: 1;
+    padding: 4px 7px;
+    border-radius: 999px;
+    background: var(--tag-bg);
+    color: var(--muted);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .tag.biz { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: lowercase; letter-spacing: 0; }
+  .tag.good { background: var(--good-bg); color: var(--good); }
+  .tag.warn { background: var(--warn-bg); color: var(--warn); }
+  .tag.bad { background: var(--bad-bg); color: var(--bad); }
+  .tag.neutral { background: var(--neutral-bg); color: var(--neutral); }
+  .dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--neutral); margin-right: 6px; vertical-align: middle; flex: none;
+  }
+  .dot.good { background: var(--good); }
+  .dot.warn { background: var(--warn); }
+  .dot.bad { background: var(--bad); }
+
+  /* Goals strip */
+  .goals { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .goal { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; background: var(--card); box-shadow: var(--shadow); }
+  .goal .top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+  .goal .title { font-weight: 600; font-size: 14px; }
+  .goal .status { font-size: 12px; white-space: nowrap; display: inline-flex; align-items: center; }
+  .goal .status.good { color: var(--good); }
+  .goal .status.warn { color: var(--warn); }
+  .goal .status.bad { color: var(--bad); }
+  .goal .status.neutral { color: var(--neutral); }
+  .goal .status.done { color: var(--faint); }
+  .goal .nums { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .bar { height: 4px; background: var(--track); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; border-radius: 2px; background: var(--neutral); }
+  .bar.good > i { background: var(--good); }
+  .bar.warn > i { background: var(--warn); }
+  .bar.bad > i { background: var(--bad); }
+  .bar.done > i { background: var(--faint); }
+  .goal .note { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  /* Timeline */
+  .hour { display: grid; grid-template-columns: 64px 1fr; gap: 8px; padding: 8px 0; border-top: 1px solid var(--border); }
+  .hour:first-child { border-top: 0; padding-top: 0; }
+  .hour .label { font-size: 12px; color: var(--faint); padding-top: 3px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .event { padding: 3px 0 5px; }
+  .event .when { font-size: 13px; color: var(--muted); }
+  .event .title { font-weight: 500; }
+  .event .title a { color: var(--text); }
+  .event .meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 3px; font-size: 12px; color: var(--muted); }
+  .event.conflict { border-left: 3px solid var(--bad); padding-left: 10px; margin-left: -13px; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 13px; list-style: none; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before { content: "+ "; color: var(--faint); }
+  details[open] summary::before { content: "- "; }
+  .oneline { display: flex; gap: 10px; padding: 4px 0; font-size: 14px; }
+  .oneline .t { color: var(--muted); min-width: 70px; font-size: 13px; padding-top: 1px; }
+  .oneline .acct { color: var(--faint); font-size: 12px; margin-left: auto; white-space: nowrap; }
+
+  /* Lists */
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .rows li { padding: 8px 0; border-top: 1px solid var(--border); }
+  .rows li:first-child { border-top: 0; padding-top: 0; }
+  .rows li:last-child { padding-bottom: 0; }
+  .row-top { display: flex; gap: 8px; align-items: baseline; }
+  .row-top .from { font-weight: 600; font-size: 14px; }
+  .row-top .age { margin-left: auto; color: var(--faint); font-size: 12px; white-space: nowrap; }
+  .row-sub { font-size: 14px; }
+  .row-meta { font-size: 12px; color: var(--muted); margin-top: 2px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .task { display: flex; gap: 8px; align-items: baseline; padding: 5px 0; font-size: 14px; }
+  .task > :first-child { min-width: 0; }
+  .task .small { flex: none; white-space: nowrap; }
+  .task .due { flex: none; margin-left: auto; color: var(--faint); font-size: 12px; white-space: nowrap; }
+  .recent { padding: 5px 0; font-size: 14px; }
+  .recent .line { display: flex; gap: 8px; align-items: baseline; }
+  .recent .line > :first-child { min-width: 0; }
+  .recent .due { flex: none; margin-left: auto; color: var(--faint); font-size: 12px; white-space: nowrap; }
+  .recent .path { color: var(--faint); font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
+  .task.overdue .due, .task.overdue a { color: var(--bad); }
+  .task.done { color: var(--muted); }
+
+  /* Stat tiles */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px 14px; }
+  .stat .v { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.15; }
+  .stat .l { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .lowgp { margin-top: 12px; }
+  .lowgp .task .pct { margin-left: auto; color: var(--bad); font-weight: 600; font-size: 13px; }
+  .lowgp .task .customer { color: var(--bad); }
+  .lowgp .task .job { color: var(--muted); font-size: 12px; }
+
+  /* Content */
+  .rec { padding: 10px 0; border-top: 1px solid var(--border); }
+  .rec:first-child { border-top: 0; padding-top: 0; }
+  .rec:last-child { padding-bottom: 0; }
+  .rec .head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .rec .title { font-weight: 500; }
+  .rec .creator { color: var(--muted); font-size: 13px; }
+  .rec p { margin: 4px 0 0; font-size: 14px; }
+  .rec p b { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 4px; }
+  .rec .tags { margin-top: 6px; display: flex; gap: 6px; }
+
+  /* Yesterday */
+  .yday p { margin: 0 0 8px; }
+  .yday ul { margin: 4px 0 0; padding-left: 18px; }
+  .yday li { margin: 2px 0; font-size: 14px; }
+  .cols3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+
+  /* Footer */
+  footer { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 14px; font-size: 13px; color: var(--muted); }
+  .sources { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .sources li { display: inline-flex; align-items: center; gap: 4px; }
+  .sources .detail { color: var(--faint); }
+  .footer-row { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  /* Message states */
+  .notice { color: var(--muted); font-size: 15px; padding: 24px 0; }
+  .notice code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; background: var(--tag-bg); padding: 2px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main id="app"><p class="notice">Loading today.</p></main>
+
+<script>
+(function () {
+  "use strict";
+
+  var DATA_URL = "data/today.json";
+  var REFRESH_MS = 15 * 60 * 1000;
+  var app = document.getElementById("app");
+
+  /* ---------- tiny DOM helper. Everything goes through textContent, never innerHTML. ---------- */
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") node.className = v;
+        else if (k === "text") node.textContent = v;
+        else node.setAttribute(k, v);
+      });
+    }
+    if (children) {
+      (Array.isArray(children) ? children : [children]).forEach(function (c) {
+        if (c === null || c === undefined || c === false) return;
+        node.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+      });
+    }
+    return node;
+  }
+  function safeLink(url, text, cls) {
+    if (url && /^https?:\/\//i.test(url)) {
+      return el("a", { href: url, target: "_blank", rel: "noopener", class: cls, text: text });
+    }
+    return el("span", { class: cls, text: text });
+  }
+  function nonEmpty(arr) { return Array.isArray(arr) && arr.length > 0; }
+  function isNum(n) { return typeof n === "number" && isFinite(n); }
+
+  /* ---------- formatting ---------- */
+  var TZ = "America/Chicago";
+  function fmtTime(iso) {
+    if (!iso) return "";
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    try {
+      return new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZone: TZ }).format(d);
+    } catch (e) { return d.toLocaleTimeString(); }
+  }
+  function fmtHour(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    try {
+      return new Intl.DateTimeFormat("en-US", { hour: "numeric", timeZone: TZ }).format(d);
+    } catch (e) { return String(d.getHours()); }
+  }
+  function fmtDateWords(dateStr) {
+    if (!dateStr) return "";
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(dateStr);
+    if (!m) return dateStr;
+    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], 12));
+    return new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(d);
+  }
+  function fmtShortDate(dateStr) {
+    if (!dateStr) return "";
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(dateStr);
+    if (!m) return dateStr;
+    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], 12));
+    return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(d);
+  }
+  function fmtDollars(n) {
+    if (!isNum(n)) return "";
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
+  }
+  function fmtPct(n) {
+    if (!isNum(n)) return "no data";
+    var r = Math.round(n * 10) / 10;
+    return (Number.isInteger(r) ? r.toFixed(0) : r.toFixed(1)) + "%";
+  }
+  function fmtNum(n) {
+    if (!isNum(n)) return "";
+    return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(n);
+  }
+  function fmtAge(hours) {
+    if (!isNum(hours)) return "";
+    if (hours < 1) return "now";
+    if (hours < 24) return Math.round(hours) + "h";
+    return Math.round(hours / 24) + "d";
+  }
+  function hasTime(s) { return typeof s === "string" && /T\d{2}:\d{2}/.test(s); }
+
+  /* ---------- lookups ---------- */
+  function accountLabel(accounts, email) {
+    if (!email) return "";
+    var a = (accounts || []).filter(function (x) { return x && x.email === email; })[0];
+    return a && a.label ? a.label : email;
+  }
+  function statusClass(s) {
+    return { on_track: "good", at_risk: "warn", behind: "bad", done: "done", unknown: "neutral" }[s] || "neutral";
+  }
+  function statusText(s) {
+    return { on_track: "On track", at_risk: "At risk", behind: "Behind", done: "Done", unknown: "No data" }[s] || "No data";
+  }
+  function bizTag(b) { return b ? el("span", { class: "tag biz", text: b }) : null; }
+
+  /* ---------- sections ---------- */
+  function renderHeader(d) {
+    var wrap = el("header", { class: "header" });
+    wrap.appendChild(el("h1", { text: fmtDateWords(d.date) }));
+    var updated = d.generated_at ? fmtTime(d.generated_at) : "";
+    if (updated) wrap.appendChild(el("span", { class: "updated", text: "Updated " + updated }));
+    if (d.headline || d.day_shape) {
+      var p = el("p", { class: "headline" });
+      if (d.headline) p.appendChild(document.createTextNode(d.headline));
+      if (d.day_shape) p.appendChild(el("span", { class: "tag shape", text: d.day_shape + " day" }));
+      wrap.appendChild(p);
+    }
+    return wrap;
+  }
+
+  function goalNums(g) {
+    var unit = g.unit || "";
+    function one(v) {
+      if (v === null || v === undefined || v === "") return null;
+      if (unit === "pct") return isNum(v) ? fmtPct(v) : String(v);
+      if (unit === "dollars") return isNum(v) ? fmtDollars(v) : String(v);
+      return isNum(v) ? fmtNum(v) : String(v);
+    }
+    var cur = one(g.current), tgt = one(g.target);
+    var suffix = (unit && unit !== "pct" && unit !== "dollars") ? " " + unit : "";
+    var s;
+    if (cur !== null && tgt !== null) s = cur + " of " + tgt + suffix;
+    else if (tgt !== null) s = "Target " + tgt + suffix;
+    else if (cur !== null) s = "Now " + cur + suffix;
+    else s = "";
+    if (g.due) s += (s ? ", " : "") + "due " + fmtShortDate(g.due);
+    return s;
+  }
+  function renderGoals(d) {
+    var sec = el("section");
+    sec.appendChild(el("h2", { text: "On track" }));
+    if (!nonEmpty(d.goals)) {
+      sec.appendChild(el("p", { class: "empty-note", text: "No goals yet. They come from goals/goals.yaml in the repo. Add a few there and they show up here." }));
+      return sec;
+    }
+    var grid = el("div", { class: "goals" });
+    d.goals.forEach(function (g) {
+      var cls = statusClass(g.status);
+      var card = el("div", { class: "goal" });
+      card.appendChild(el("div", { class: "top" }, [
+        el("div", { class: "title" }, [g.title || g.id || "", " ", bizTag(g.business)]),
+        el("span", { class: "status " + cls }, [el("i", { class: "dot " + cls }), statusText(g.status)])
+      ]));
+      var nums = goalNums(g);
+      if (nums) card.appendChild(el("div", { class: "nums", text: nums }));
+      var pct = null;
+      if (g.status === "done") pct = 100;
+      else if (isNum(g.current) && isNum(g.target) && g.target > 0) pct = Math.max(0, Math.min(100, g.current / g.target * 100));
+      if (pct !== null) {
+        var fill = el("i");
+        fill.style.width = pct.toFixed(1) + "%";
+        card.appendChild(el("div", { class: "bar " + cls }, fill));
+      }
+      if (g.note) card.appendChild(el("div", { class: "note", text: g.note }));
+      grid.appendChild(card);
+    });
+    sec.appendChild(grid);
+    return sec;
+  }
+
+  function eventWhen(ev) {
+    if (ev.all_day || !hasTime(ev.start)) return "All day";
+    var s = fmtTime(ev.start), e = fmtTime(ev.end);
+    return e ? s + " to " + e : s;
+  }
+  function renderCalendar(cal) {
+    if (!cal || !nonEmpty(cal.events)) return null;
+    var accounts = cal.accounts || [];
+    var today = cal.events.filter(function (e) { return !e.day || e.day === "today"; });
+    var tomorrow = cal.events.filter(function (e) { return e.day === "tomorrow"; });
+    if (!today.length && !tomorrow.length) return null;
+
+    var card = el("div", { class: "card" });
+    card.appendChild(el("h2", { text: "Today" }));
+
+    if (today.length) {
+      today.sort(function (a, b) { return String(a.start).localeCompare(String(b.start)); });
+      var groups = [], byKey = {};
+      today.forEach(function (ev) {
+        var key = (ev.all_day || !hasTime(ev.start)) ? "All day" : fmtHour(ev.start);
+        if (!byKey[key]) { byKey[key] = []; groups.push(key); }
+        byKey[key].push(ev);
+      });
+      groups.forEach(function (key) {
+        var col = el("div");
+        byKey[key].forEach(function (ev) {
+          var item = el("div", { class: "event" + (ev.conflict ? " conflict" : "") });
+          item.appendChild(el("div", { class: "when", text: eventWhen(ev) }));
+          item.appendChild(el("div", { class: "title" }, safeLink(ev.link, ev.title || "(no title)")));
+          var meta = el("div", { class: "meta" });
+          var acct = accountLabel(accounts, ev.account);
+          if (acct) meta.appendChild(el("span", { text: acct }));
+          if (ev.business) meta.appendChild(bizTag(ev.business));
+          if (ev.location) meta.appendChild(el("span", { class: "faint", text: ev.location }));
+          if (ev.conflict) meta.appendChild(el("span", { class: "tag bad", text: "Conflict" }));
+          item.appendChild(meta);
+          col.appendChild(item);
+        });
+        card.appendChild(el("div", { class: "hour" }, [el("div", { class: "label", text: key }), col]));
+      });
+    } else {
+      card.appendChild(el("p", { class: "empty-note", text: "Nothing on the calendar today." }));
+    }
+
+    if (tomorrow.length) {
+      tomorrow.sort(function (a, b) { return String(a.start).localeCompare(String(b.start)); });
+      var det = el("details");
+      det.appendChild(el("summary", { text: "Tomorrow, " + tomorrow.length + (tomorrow.length === 1 ? " event" : " events") }));
+      tomorrow.forEach(function (ev) {
+        var when = (ev.all_day || !hasTime(ev.start)) ? "All day" : fmtTime(ev.start);
+        det.appendChild(el("div", { class: "oneline" }, [
+          el("span", { class: "t", text: when }),
+          safeLink(ev.link, ev.title || "(no title)"),
+          el("span", { class: "acct", text: accountLabel(accounts, ev.account) })
+        ]));
+      });
+      det.style.marginTop = "14px";
+      card.appendChild(det);
+    }
+    return card;
+  }
+
+  function threadList(threads, accounts) {
+    var ul = el("ul", { class: "rows" });
+    threads.forEach(function (t) {
+      var li = el("li");
+      li.appendChild(el("div", { class: "row-top" }, [
+        el("span", { class: "from", text: t.from || "" }),
+        el("span", { class: "age", text: fmtAge(t.age_hours) })
+      ]));
+      li.appendChild(el("div", { class: "row-sub" }, safeLink(t.link, t.subject || "(no subject)")));
+      var meta = el("div", { class: "row-meta" });
+      var acct = accountLabel(accounts, t.account);
+      if (acct) meta.appendChild(el("span", { text: acct }));
+      if (t.business) meta.appendChild(bizTag(t.business));
+      li.appendChild(meta);
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+  function taskRow(t, cls) {
+    var row = el("div", { class: "task " + (cls || "") });
+    row.appendChild(safeLink(t.link, t.title || ""));
+    if (t.project) row.appendChild(el("span", { class: "faint small", text: t.project }));
+    if (t.due) row.appendChild(el("span", { class: "due", text: fmtShortDate(t.due) }));
+    return row;
+  }
+  function renderRight(d) {
+    var email = d.email || {}, tasks = d.tasks || {};
+    var hasEmail = nonEmpty(email.needs_reply) || nonEmpty(email.waiting_on);
+    var hasTasks = nonEmpty(tasks.due_today) || nonEmpty(tasks.overdue) || nonEmpty(tasks.completed_yesterday);
+    if (!hasEmail && !hasTasks) return null;
+    var col = el("div");
+
+    if (hasEmail) {
+      var card = el("div", { class: "card" });
+      if (nonEmpty(email.needs_reply)) {
+        card.appendChild(el("h2", { text: "Needs a reply" }));
+        card.appendChild(threadList(email.needs_reply, email.accounts));
+      }
+      if (nonEmpty(email.waiting_on)) {
+        card.appendChild(el(nonEmpty(email.needs_reply) ? "h3" : "h2", { text: "Waiting on" }));
+        card.appendChild(threadList(email.waiting_on, email.accounts));
+      }
+      col.appendChild(card);
+    }
+
+    if (hasTasks) {
+      var tcard = el("div", { class: "card" });
+      tcard.style.marginTop = hasEmail ? "16px" : "0";
+      tcard.appendChild(el("h2", { text: "Tasks" + (tasks.source ? " from " + tasks.source : "") }));
+      if (nonEmpty(tasks.overdue)) {
+        tcard.appendChild(el("div", { class: "small muted", text: "Overdue" }));
+        tasks.overdue.forEach(function (t) { tcard.appendChild(taskRow(t, "overdue")); });
+      }
+      if (nonEmpty(tasks.due_today)) {
+        var lbl = el("div", { class: "small muted", text: "Due today" });
+        if (nonEmpty(tasks.overdue)) lbl.style.marginTop = "10px";
+        tcard.appendChild(lbl);
+        tasks.due_today.forEach(function (t) { tcard.appendChild(taskRow(t)); });
+      }
+      if (nonEmpty(tasks.completed_yesterday)) {
+        var det = el("details");
+        det.style.marginTop = "10px";
+        det.appendChild(el("summary", { text: "Done yesterday, " + tasks.completed_yesterday.length }));
+        tasks.completed_yesterday.forEach(function (t) { det.appendChild(taskRow(t, "done")); });
+        tcard.appendChild(det);
+      }
+      col.appendChild(tcard);
+    }
+    return col;
+  }
+
+  function stat(value, label) {
+    return el("div", { class: "stat" }, [el("div", { class: "v", text: value }), el("div", { class: "l", text: label })]);
+  }
+  function renderAtwc(b) {
+    var w = b && b.waitlist;
+    if (!w || Object.keys(w).length === 0) return null;
+    var card = el("div", { class: "card" });
+    card.appendChild(el("h2", { text: "ATWC waitlist" }));
+    var grid = el("div", { class: "stats" });
+    if (isNum(w.pending)) grid.appendChild(stat(fmtNum(w.pending), "waiting now"));
+    if (isNum(w.added_this_month)) grid.appendChild(stat(fmtNum(w.added_this_month), "added this month"));
+    if (isNum(w.scheduled_this_month)) grid.appendChild(stat(fmtNum(w.scheduled_this_month), "scheduled this month"));
+    if (isNum(w.removed_this_month)) grid.appendChild(stat(fmtNum(w.removed_this_month), "removed this month"));
+    if ("conversion_pct" in w) grid.appendChild(stat(fmtPct(w.conversion_pct), "conversion"));
+    if ("median_days_to_schedule" in w) grid.appendChild(stat(isNum(w.median_days_to_schedule) ? fmtNum(w.median_days_to_schedule) : "no data", "median days to schedule"));
+    card.appendChild(grid);
+    return card;
+  }
+  function renderQca(b) {
+    var w = b && b.wip;
+    if (!w || Object.keys(w).length === 0) return null;
+    var card = el("div", { class: "card" });
+    card.appendChild(el("h2", { text: "QCA work in progress" }));
+    var grid = el("div", { class: "stats" });
+    if (isNum(w.active_jobs)) grid.appendChild(stat(fmtNum(w.active_jobs), "active jobs"));
+    if (isNum(w.not_started)) grid.appendChild(stat(fmtNum(w.not_started), "not started"));
+    if (isNum(w.on_hold)) grid.appendChild(stat(fmtNum(w.on_hold), "on hold"));
+    if (isNum(w.total_contract_value)) grid.appendChild(stat(fmtDollars(w.total_contract_value), "total contract value"));
+    if (isNum(w.uncollected)) grid.appendChild(stat(fmtDollars(w.uncollected), "uncollected"));
+    if ("avg_gp_pct" in w) grid.appendChild(stat(fmtPct(w.avg_gp_pct), "average gross profit"));
+    card.appendChild(grid);
+    if (nonEmpty(w.jobs_below_40_gp)) {
+      var box = el("div", { class: "lowgp" });
+      box.appendChild(el("div", { class: "small muted", text: "Below 40% gross profit" }));
+      w.jobs_below_40_gp.forEach(function (j) {
+        var row = el("div", { class: "task" });
+        if (j.job !== undefined && j.job !== null && j.job !== "") row.appendChild(el("span", { class: "job", text: "#" + j.job }));
+        row.appendChild(el("span", { class: "customer", text: j.customer || "" }));
+        if (j.status) row.appendChild(el("span", { class: "faint small", text: j.status }));
+        row.appendChild(el("span", { class: "pct", text: fmtPct(j.gp_pct) }));
+        box.appendChild(row);
+      });
+      card.appendChild(box);
+    }
+    return card;
+  }
+  function renderBusinesses(d) {
+    var b = d.businesses || {};
+    var a = renderAtwc(b.atwc), q = renderQca(b.qca);
+    if (!a && !q) return null;
+    var sec = el("section", { class: "grid2 even" });
+    if (a) sec.appendChild(a);
+    if (q) sec.appendChild(q);
+    return sec;
+  }
+
+  function renderBrain(br) {
+    if (!br || Object.keys(br).length === 0) return null;
+    var card = el("div", { class: "card" });
+    card.appendChild(el("h2", { text: "Second brain" }));
+    var grid = el("div", { class: "stats" });
+    if (isNum(br.total_items)) grid.appendChild(stat(fmtNum(br.total_items), "items in the library"));
+    if (isNum(br.ingested_yesterday)) grid.appendChild(stat(fmtNum(br.ingested_yesterday), "filed yesterday"));
+    if (isNum(br.inbox_pending)) grid.appendChild(stat(fmtNum(br.inbox_pending), "waiting in inbox"));
+    if (grid.childNodes.length) card.appendChild(grid);
+    if (nonEmpty(br.recent)) {
+      card.appendChild(el("h3", { text: "Recent" }));
+      br.recent.slice(0, 5).forEach(function (r) {
+        var row = el("div", { class: "recent" });
+        var line = el("div", { class: "line" });
+        line.appendChild(el("span", { text: r.title || r.path || "" }));
+        if (r.business) line.appendChild(bizTag(r.business));
+        if (r.added) line.appendChild(el("span", { class: "due", text: fmtShortDate(r.added) }));
+        row.appendChild(line);
+        if (r.path && r.title) row.appendChild(el("div", { class: "path", text: r.path, title: r.path }));
+        card.appendChild(row);
+      });
+    }
+    return card.childNodes.length > 1 ? card : null;
+  }
+
+  function renderContent(c) {
+    if (!c || !nonEmpty(c.recommendations)) return null;
+    var card = el("div", { class: "card" });
+    card.appendChild(el("h2", { text: "Worth watching" }));
+    c.recommendations.forEach(function (r) {
+      var box = el("div", { class: "rec" });
+      var head = el("div", { class: "head" });
+      if (r.platform) head.appendChild(el("span", { class: "tag", text: r.platform }));
+      head.appendChild(safeLink(r.url, r.title || r.url, "title"));
+      if (r.creator) head.appendChild(el("span", { class: "creator", text: "by " + r.creator }));
+      box.appendChild(head);
+      if (r.why) box.appendChild(el("p", {}, [el("b", { text: "Why" }), r.why]));
+      if (r.angle) box.appendChild(el("p", {}, [el("b", { text: "Your angle" }), r.angle]));
+      if (r.audience || r.job) {
+        var tags = el("div", { class: "tags" });
+        if (r.audience) tags.appendChild(el("span", { class: "tag biz", text: r.audience }));
+        if (r.job) tags.appendChild(el("span", { class: "tag", text: r.job }));
+        box.appendChild(tags);
+      }
+      card.appendChild(box);
+    });
+    return card;
+  }
+
+  function renderYesterday(y) {
+    if (!y) return null;
+    var has = y.summary || nonEmpty(y.accomplished) || nonEmpty(y.slipped) || nonEmpty(y.carry_forward);
+    if (!has) return null;
+    var card = el("div", { class: "card yday" });
+    card.appendChild(el("h2", { text: "Yesterday" }));
+    if (y.summary) card.appendChild(el("p", { text: y.summary }));
+    var cols = el("div", { class: "cols3" });
+    function list(title, items) {
+      if (!nonEmpty(items)) return;
+      var box = el("div");
+      box.appendChild(el("div", { class: "small muted", text: title }));
+      var ul = el("ul");
+      items.forEach(function (s) { ul.appendChild(el("li", { text: s })); });
+      box.appendChild(ul);
+      cols.appendChild(box);
+    }
+    list("Got done", y.accomplished);
+    list("Slipped", y.slipped);
+    list("Carry forward", y.carry_forward);
+    if (cols.childNodes.length) card.appendChild(cols);
+    return card;
+  }
+
+  function renderFooter(d) {
+    var f = el("footer");
+    if (nonEmpty(d.sources)) {
+      var ul = el("ul", { class: "sources" });
+      d.sources.forEach(function (s) {
+        var cls = s.status === "ok" ? "good" : s.status === "error" ? "warn" : "";
+        var li = el("li", { title: s.fetched_at ? "fetched " + fmtTime(s.fetched_at) : null });
+        li.appendChild(el("i", { class: "dot " + cls }));
+        li.appendChild(el("span", { text: s.name || "" }));
+        var detail = s.detail || (s.status === "not_configured" ? "not set up" : s.status === "error" ? "failed" : "");
+        if (detail) li.appendChild(el("span", { class: "detail", text: ", " + detail }));
+        ul.appendChild(li);
+      });
+      f.appendChild(ul);
+    }
+    var row = el("div", { class: "footer-row" });
+    var refresh = el("a", { href: "#", text: "Refresh" });
+    refresh.addEventListener("click", function (e) { e.preventDefault(); load(); });
+    row.appendChild(refresh);
+    if (d.owner) row.appendChild(el("span", { class: "faint", text: "for " + d.owner }));
+    row.appendChild(el("span", { class: "faint", text: "Refreshes every 15 minutes and when you come back to this tab." }));
+    f.appendChild(row);
+    return f;
+  }
+
+  /* ---------- page ---------- */
+  function render(d) {
+    TZ = d.timezone || TZ;
+    var frag = document.createDocumentFragment();
+    frag.appendChild(renderHeader(d));
+    frag.appendChild(renderGoals(d));
+
+    var left = renderCalendar(d.calendar), right = renderRight(d);
+    if (left || right) {
+      var grid = el("section", { class: "grid2" });
+      if (left) grid.appendChild(left);
+      if (right) grid.appendChild(right);
+      if (!left || !right) grid.style.gridTemplateColumns = "1fr";
+      frag.appendChild(grid);
+    }
+
+    var biz = renderBusinesses(d);
+    if (biz) frag.appendChild(biz);
+
+    var brain = renderBrain(d.brain), content = renderContent(d.content);
+    if (brain || content) {
+      var g2 = el("section", { class: "grid2 even" });
+      if (brain) g2.appendChild(brain);
+      if (content) g2.appendChild(content);
+      if (!brain || !content) g2.style.gridTemplateColumns = "1fr";
+      frag.appendChild(g2);
+    }
+
+    var y = renderYesterday(d.yesterday);
+    if (y) frag.appendChild(el("section", {}, y));
+
+    frag.appendChild(renderFooter(d));
+
+    app.textContent = "";
+    app.appendChild(frag);
+    document.title = "Jarvis Today, " + fmtShortDate(d.date);
+  }
+
+  function renderError(reason) {
+    var p = el("p", { class: "notice" }, [
+      "Nothing to show yet. Run ",
+      el("code", { text: "python -m collectors.build_today" }),
+      " from the repo root to write data/today.json, then refresh this page."
+    ]);
+    if (reason) p.appendChild(el("span", { class: "faint small", text: " (" + reason + ")" }));
+    app.textContent = "";
+    app.appendChild(p);
+  }
+
+  var loading = false;
+  function load() {
+    if (loading) return;
+    loading = true;
+    fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        if (!d || typeof d !== "object") throw new Error("not an object");
+        render(d);
+      })
+      .catch(function (e) { renderError(e && e.message ? e.message : ""); })
+      .then(function () { loading = false; });
+  }
+
+  load();
+  setInterval(load, REFRESH_MS);
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible") load();
+  });
+})();
+</script>
+</body>
+</html>

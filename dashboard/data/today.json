@@ -1,0 +1,380 @@
+{
+  "generated_at": "2026-09-28T06:02:11-05:00",
+  "date": "2026-09-28",
+  "timezone": "America/Chicago",
+  "owner": "Margaret",
+  "headline": "Two overlapping calls late morning, otherwise a normal Monday with QCA needing the most attention.",
+  "day_shape": "normal",
+  "goals": [
+    {
+      "id": "atwc-q4-waitlist-conversion",
+      "title": "Convert 70 percent of the ATWC waitlist",
+      "business": "atwc",
+      "target": 70,
+      "current": 62,
+      "unit": "pct",
+      "due": "2026-12-31",
+      "status": "at_risk",
+      "note": "Up 4 points since the start of the month."
+    },
+    {
+      "id": "qca-q4-gp",
+      "title": "Every active QCA job above 40 percent gross profit",
+      "business": "qca",
+      "target": 12,
+      "current": 10,
+      "unit": "jobs",
+      "due": "2026-12-31",
+      "status": "behind",
+      "note": "Two jobs are under the line. See the WIP card."
+    },
+    {
+      "id": "qca-cash",
+      "title": "Collect on finished QCA jobs within 30 days",
+      "business": "qca",
+      "target": 30,
+      "current": 27,
+      "unit": "days",
+      "due": "2026-12-31",
+      "status": "on_track"
+    },
+    {
+      "id": "personal-reading",
+      "title": "Read 12 books this year",
+      "business": "personal",
+      "target": 12,
+      "current": 9,
+      "unit": "books",
+      "due": "2026-12-31",
+      "status": "on_track"
+    }
+  ],
+  "calendar": {
+    "accounts": [
+      {"email": "margaret@mytherapywellness.com", "business": "atwc", "label": "ATWC calendar"},
+      {"email": "margaret@qcaroofing.example", "business": "qca", "label": "QCA calendar"}
+    ],
+    "events": [
+      {
+        "id": "ev-001",
+        "account": "margaret@mytherapywellness.com",
+        "business": "atwc",
+        "title": "Team huddle",
+        "start": "2026-09-28T08:00:00-05:00",
+        "end": "2026-09-28T08:30:00-05:00",
+        "all_day": false,
+        "location": "Clinic, front office",
+        "attendees_count": 6,
+        "organizer_is_me": true,
+        "response": "owner",
+        "link": "https://calendar.google.com/calendar/event?eid=example-ev-001",
+        "conflict": false,
+        "day": "today"
+      },
+      {
+        "id": "ev-002",
+        "account": "margaret@mytherapywellness.com",
+        "business": "atwc",
+        "title": "Evaluation block, two new families",
+        "start": "2026-09-28T09:00:00-05:00",
+        "end": "2026-09-28T10:30:00-05:00",
+        "all_day": false,
+        "location": "Clinic, room 2",
+        "attendees_count": 1,
+        "organizer_is_me": true,
+        "response": "owner",
+        "link": "https://calendar.google.com/calendar/event?eid=example-ev-002",
+        "conflict": false,
+        "day": "today"
+      },
+      {
+        "id": "ev-003",
+        "account": "margaret@qcaroofing.example",
+        "business": "qca",
+        "title": "Site walk, Pinecrest Drive re-roof",
+        "start": "2026-09-28T10:30:00-05:00",
+        "end": "2026-09-28T11:15:00-05:00",
+        "all_day": false,
+        "location": "1412 Pinecrest Dr",
+        "attendees_count": 3,
+        "organizer_is_me": false,
+        "response": "accepted",
+        "link": "https://calendar.google.com/calendar/event?eid=example-ev-003",
+        "conflict": true,
+        "day": "today"
+      },
+      {
+        "id": "ev-004",
+        "account": "margaret@mytherapywellness.com",
+        "business": "atwc",
+        "title": "Call with Brightline Insurance about superbills",
+        "start": "2026-09-28T10:45:00-05:00",
+        "end": "2026-09-28T11:30:00-05:00",
+        "all_day": false,
+        "attendees_count": 2,
+        "organizer_is_me": false,
+        "response": "tentative",
+        "link": "https://calendar.google.com/calendar/event?eid=example-ev-004",
+        "conflict": true,
+        "day": "today"
+      },
+      {
+        "id": "ev-005",
+        "account": "margaret@qcaroofing.example",
+        "business": "qca",
+        "title": "Permit office follow-up, Oakridge HOA",
+        "start": "2026-09-28T13:00:00-05:00",
+        "end": "2026-09-28T14:00:00-05:00",
+        "all_day": false,
+        "location": "County building, 3rd floor",
+        "attendees_count": 2,
+        "organizer_is_me": true,
+        "response": "owner",
+        "link": "https://calendar.google.com/calendar/event?eid=example-ev-005",
+        "conflict": false,
+        "day": "today"
+      },
+      {
+        "id": "ev-006",
+        "account": "margaret@mytherapywellness.com",
+        "business": "personal",
+        "title": "Dentist, kids",
+        "start": "2026-09-28T16:00:00-05:00",
+        "end": "2026-09-28T16:45:00-05:00",
+        "all_day": false,
+        "attendees_count": 1,
+        "organizer_is_me": true,
+        "response": "owner",
+        "link": "https://calendar.google.com/calendar/event?eid=example-ev-006",
+        "conflict": false,
+        "day": "today"
+      },
+      {
+        "id": "ev-007",
+        "account": "margaret@mytherapywellness.com",
+        "business": "atwc",
+        "title": "Marketing review with Kelsey",
+        "start": "2026-09-29T09:00:00-05:00",
+        "end": "2026-09-29T09:45:00-05:00",
+        "all_day": false,
+        "attendees_count": 2,
+        "organizer_is_me": true,
+        "response": "owner",
+        "link": "https://calendar.google.com/calendar/event?eid=example-ev-007",
+        "conflict": false,
+        "day": "tomorrow"
+      },
+      {
+        "id": "ev-008",
+        "account": "margaret@qcaroofing.example",
+        "business": "qca",
+        "title": "Riverbend Supply, shingle pricing for Q4",
+        "start": "2026-09-29T14:00:00-05:00",
+        "end": "2026-09-29T14:30:00-05:00",
+        "all_day": false,
+        "attendees_count": 2,
+        "organizer_is_me": false,
+        "response": "accepted",
+        "link": "https://calendar.google.com/calendar/event?eid=example-ev-008",
+        "conflict": false,
+        "day": "tomorrow"
+      }
+    ]
+  },
+  "email": {
+    "accounts": [
+      {"email": "margaret@mytherapywellness.com", "business": "atwc", "label": "ATWC inbox"},
+      {"email": "margaret@qcaroofing.example", "business": "qca", "label": "QCA inbox"}
+    ],
+    "counts": {"unread": 23, "needs_reply": 4, "waiting_on": 2},
+    "needs_reply": [
+      {
+        "id": "th-101",
+        "account": "margaret@mytherapywellness.com",
+        "business": "atwc",
+        "from": "Dana Whitfield, Brightline Insurance",
+        "subject": "Question about your superbill format",
+        "received": "2026-09-28T01:10:00-05:00",
+        "age_hours": 5,
+        "snippet": "Before our call, could you confirm which CPT codes you list on the superbill so we can...",
+        "link": "https://mail.google.com/mail/u/0/#inbox/example-th-101"
+      },
+      {
+        "id": "th-102",
+        "account": "margaret@qcaroofing.example",
+        "business": "qca",
+        "from": "Tom Alvarez",
+        "subject": "Re: Pinecrest Drive estimate revision",
+        "received": "2026-09-27T04:00:00-05:00",
+        "age_hours": 26,
+        "snippet": "Thanks for the updated numbers. Can we drop the gutter guards and see where that lands...",
+        "link": "https://mail.google.com/mail/u/1/#inbox/example-th-102"
+      },
+      {
+        "id": "th-103",
+        "account": "margaret@mytherapywellness.com",
+        "business": "atwc",
+        "from": "Priya Natarajan, Hartwell Pediatrics",
+        "subject": "How your referral process works",
+        "received": "2026-09-28T03:05:00-05:00",
+        "age_hours": 3,
+        "snippet": "Our front desk asked me how you like referrals sent over. Fax, portal, or email?",
+        "link": "https://mail.google.com/mail/u/0/#inbox/example-th-103"
+      },
+      {
+        "id": "th-104",
+        "account": "margaret@mytherapywellness.com",
+        "business": "atwc",
+        "from": "Kelsey Moran",
+        "subject": "Podcast guest slot in October",
+        "received": "2026-09-26T02:00:00-05:00",
+        "age_hours": 52,
+        "snippet": "The Feeding Matters show has a Tuesday slot open on the 14th or the 21st. Which works?",
+        "link": "https://mail.google.com/mail/u/0/#inbox/example-th-104"
+      }
+    ],
+    "waiting_on": [
+      {
+        "id": "th-201",
+        "account": "margaret@qcaroofing.example",
+        "business": "qca",
+        "from": "Riverbend Supply",
+        "subject": "Quote 4471, metal flashing",
+        "received": "2026-09-25T06:00:00-05:00",
+        "age_hours": 72,
+        "snippet": "You asked for the updated quote on Thursday. No reply yet.",
+        "link": "https://mail.google.com/mail/u/1/#sent/example-th-201"
+      },
+      {
+        "id": "th-202",
+        "account": "margaret@mytherapywellness.com",
+        "business": "atwc",
+        "from": "Ledgerly Bookkeeping",
+        "subject": "August close, two open questions",
+        "received": "2026-09-24T06:00:00-05:00",
+        "age_hours": 96,
+        "snippet": "You answered both questions Wednesday. Still waiting on the closed books.",
+        "link": "https://mail.google.com/mail/u/0/#sent/example-th-202"
+      }
+    ]
+  },
+  "tasks": {
+    "source": "Asana",
+    "due_today": [
+      {"id": "t-1", "title": "Approve October staff schedule", "project": "ATWC Ops", "business": "atwc", "due": "2026-09-28", "link": "https://app.asana.com/0/example/t-1"},
+      {"id": "t-2", "title": "Send revised Pinecrest estimate", "project": "QCA Sales", "business": "qca", "due": "2026-09-28", "link": "https://app.asana.com/0/example/t-2"},
+      {"id": "t-3", "title": "Record intro for the feeding workshop", "project": "ATWC Marketing", "business": "atwc", "due": "2026-09-28", "link": "https://app.asana.com/0/example/t-3"}
+    ],
+    "overdue": [
+      {"id": "t-4", "title": "Sign the Oakridge HOA change order", "project": "QCA Jobs", "business": "qca", "due": "2026-09-25", "link": "https://app.asana.com/0/example/t-4"},
+      {"id": "t-5", "title": "Reply to the pelvic floor CEU vendor", "project": "ATWC Ops", "business": "atwc", "due": "2026-09-26", "link": "https://app.asana.com/0/example/t-5"}
+    ],
+    "completed_yesterday": [
+      {"id": "t-6", "title": "Pay Riverbend invoice 8812", "project": "QCA Finance", "business": "qca", "due": "2026-09-27", "link": "https://app.asana.com/0/example/t-6"},
+      {"id": "t-7", "title": "Post the September newsletter", "project": "ATWC Marketing", "business": "atwc", "due": "2026-09-27", "link": "https://app.asana.com/0/example/t-7"},
+      {"id": "t-8", "title": "Order OT swing hardware", "project": "ATWC Ops", "business": "atwc", "due": null, "link": "https://app.asana.com/0/example/t-8"}
+    ]
+  },
+  "businesses": {
+    "atwc": {
+      "waitlist": {
+        "pending": 38,
+        "added_this_month": 14,
+        "scheduled_this_month": 9,
+        "removed_this_month": 3,
+        "conversion_pct": 75.0,
+        "median_days_to_schedule": 11.5
+      }
+    },
+    "qca": {
+      "wip": {
+        "active_jobs": 12,
+        "not_started": 4,
+        "on_hold": 1,
+        "total_contract_value": 486250,
+        "uncollected": 132400,
+        "avg_gp_pct": 43.8,
+        "jobs_below_40_gp": [
+          {"job": 2418, "customer": "Halvorsen residence", "gp_pct": 31.2, "status": "Scheduled/In Progress"},
+          {"job": "2422", "customer": "Oakridge HOA clubhouse", "gp_pct": 36.9, "status": "Invoiced-Completed"}
+        ]
+      }
+    }
+  },
+  "brain": {
+    "total_items": 214,
+    "ingested_yesterday": 6,
+    "inbox_pending": 2,
+    "recent": [
+      {"title": "Notes from the myofunctional CEU, day 2", "path": "brain/library/atwc/2026-09-27-myo-ceu-day-2.md", "business": "atwc", "added": "2026-09-27"},
+      {"title": "Riverbend Supply pricing sheet, fall 2026", "path": "brain/library/qca/2026-09-27-riverbend-pricing.md", "business": "qca", "added": "2026-09-27"},
+      {"title": "Decision: keep the Saturday clinic through December", "path": "brain/library/decisions/2026-09-27-saturday-clinic.md", "business": "atwc", "added": "2026-09-27"},
+      {"title": "Tom Alvarez, contact and job history", "path": "brain/library/people/tom-alvarez.md", "business": "qca", "added": "2026-09-27"},
+      {"title": "Newsletter ideas, Q4", "path": "brain/library/marketing/2026-09-26-q4-newsletter-ideas.md", "business": "atwc", "added": "2026-09-26"}
+    ]
+  },
+  "content": {
+    "scanned_at": "2026-09-28T05:40:00-05:00",
+    "recommendations": [
+      {
+        "title": "What a tongue tie release actually changes for a bottle-fed baby",
+        "platform": "youtube",
+        "url": "https://www.youtube.com/watch?v=example-content-1",
+        "creator": "Little Latch Clinic",
+        "why": "Parents on your waitlist ask this exact question and there is no calm, short answer out there.",
+        "angle": "Film a three minute version with your feeding therapist walking through before and after, no jargon.",
+        "audience": "atwc",
+        "job": "attract",
+        "score": 8.6
+      },
+      {
+        "title": "Roof inspection in 90 seconds: the 5 things I check first",
+        "platform": "tiktok",
+        "url": "https://www.tiktok.com/@example/video/example-content-2",
+        "creator": "Hank the Roofer",
+        "why": "Homeowners trust a contractor who shows the checklist before the sales pitch.",
+        "angle": "Same format, shot on a real QCA job with your crew lead. End with how to book an inspection.",
+        "audience": "qca",
+        "job": "activate",
+        "score": 8.1
+      },
+      {
+        "title": "How I run two businesses without two calendars",
+        "platform": "instagram",
+        "url": "https://www.instagram.com/reel/example-content-3/",
+        "creator": "Marisol Vega",
+        "why": "Your two-business story is the thing people remember about you. This shows how to tell it in under a minute.",
+        "angle": "A reel about your morning page and how the clinic and the roofing crew both show up on it.",
+        "audience": "both",
+        "job": "amplify",
+        "score": 7.4
+      }
+    ]
+  },
+  "yesterday": {
+    "summary": "A quiet Sunday. The newsletter went out and the Riverbend invoice got paid. The Oakridge change order is still unsigned.",
+    "accomplished": [
+      "Posted the September newsletter",
+      "Paid Riverbend invoice 8812",
+      "Filed six items into the second brain"
+    ],
+    "slipped": [
+      "Oakridge HOA change order, now three days late",
+      "Reply to the pelvic floor CEU vendor"
+    ],
+    "carry_forward": [
+      "Sign the Oakridge change order before the 1 PM permit meeting",
+      "Pick a podcast date for Kelsey"
+    ]
+  },
+  "sources": [
+    {"name": "Google Calendar", "status": "ok", "detail": "2 accounts", "fetched_at": "2026-09-28T06:01:40-05:00"},
+    {"name": "Gmail", "status": "ok", "detail": "2 accounts", "fetched_at": "2026-09-28T06:01:52-05:00"},
+    {"name": "Asana", "status": "ok", "detail": "3 projects", "fetched_at": "2026-09-28T06:01:55-05:00"},
+    {"name": "ATWC waitlist", "status": "ok", "detail": "Airtable, counts only", "fetched_at": "2026-09-28T06:01:58-05:00"},
+    {"name": "QCA WIP", "status": "error", "detail": "Airtable rate limit, showing Friday's numbers", "fetched_at": "2026-09-26T06:02:00-05:00"},
+    {"name": "Second brain", "status": "ok", "detail": "index rebuilt", "fetched_at": "2026-09-28T06:02:03-05:00"},
+    {"name": "Content scout", "status": "ok", "detail": "3 picks from 41 scanned", "fetched_at": "2026-09-28T05:40:00-05:00"},
+    {"name": "Goals", "status": "not_configured", "detail": "showing sample goals until goals/goals.yaml has real ones"}
+  ]
+}
