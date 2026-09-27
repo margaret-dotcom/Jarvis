@@ -1,0 +1,120 @@
+# Filing rules for brain/ingest.py.
+#
+# How a note gets its area:
+#   1. An inline tag on the first line wins: "#atwc", "#qca", "#people" and so on.
+#   2. An "area:" field in the file's own frontmatter wins next.
+#   3. Otherwise every area below is scored. Each keyword or pattern that appears
+#      in the text adds 1 point, multiplied by the area's weight. Highest score wins.
+#   4. Ties are broken by the order in "priority".
+#   5. No matches at all: the note goes to "default_area".
+#
+# Keywords match whole words, case does not matter. Patterns are Python regexes.
+# Matched keywords also become tags on the note, so keep them meaningful.
+# Edit freely. There is no code to change when you add a word here.
+
+default_area: personal
+
+priority:
+  - decisions
+  - people
+  - atwc
+  - qca
+  - marketing
+  - personal
+
+areas:
+  atwc:
+    weight: 1
+    keywords:
+      - atwc
+      - waitlist
+      - therapy
+      - therapist
+      - patient
+      - patients
+      - myofunctional
+      - speech
+      - feeding
+      - OT
+      - occupational
+      - clinic
+      - insurance
+      - intake
+      - tongue tie
+      - lip tie
+      - pelvic floor
+      - CFT
+      - wellness center
+
+  qca:
+    weight: 1
+    keywords:
+      - qca
+      - roof
+      - roofing
+      - shingle
+      - shingles
+      - permit
+      - crew
+      - inspection
+      - estimate
+      - job
+      - contractor
+      - storm
+      - gutter
+      - hail
+      - WIP
+      - adjuster
+
+  marketing:
+    weight: 1
+    keywords:
+      - reel
+      - reels
+      - instagram
+      - tiktok
+      - youtube
+      - hook
+      - carousel
+      - caption
+      - audience
+      - content
+      - newsletter
+      - ad copy
+      - landing page
+      - followers
+
+  people:
+    weight: 2
+    keywords:
+      - meeting with
+      - call with
+      - coffee with
+      - lunch with
+      - spoke with
+      - talked to
+    patterns:
+      # an @mention like @jane or @jane.smith
+      - "(?<![\\w/])@[A-Za-z][\\w.]{1,40}"
+
+  decisions:
+    weight: 2
+    keywords:
+      - decided
+      - decision
+      - we will
+      - going forward
+      - from now on
+      - no longer
+      - final answer
+
+  personal:
+    weight: 1
+    keywords:
+      - grocery
+      - kids
+      - family
+      - doctor appointment
+      - vacation
+      - birthday
+      - house
