@@ -1,0 +1,52 @@
+# Keys install.sh merges into ~/.hermes/config.yaml (or the profile's config.yaml).
+# Deep merge: dictionaries combine, scalars here replace the existing value,
+# nothing is deleted. config.yaml is backed up first.
+# Key names match DEFAULT_CONFIG in hermes_cli/config.py (Hermes Agent v0.19).
+
+# IANA timezone. install.sh replaces this with JARVIS_TZ from .env.
+# Cron schedules in hermes/cron/jobs.yaml are interpreted in this timezone.
+timezone: America/Chicago
+
+# Subagent delegation, used by the chief-of-staff skill.
+delegation:
+  # Parallel children per delegate_task batch. Six specialists, six slots.
+  max_concurrent_children: 6
+  # Allow role="orchestrator" children. Depth stays flat (1) unless you raise
+  # max_spawn_depth; each extra level multiplies API cost.
+  orchestrator_enabled: true
+  max_spawn_depth: 1
+  # Leave model and provider empty to run subagents on the same model as Jarvis.
+  # Set them to run specialists on a cheaper model, for example:
+  # model: "google/gemini-3-flash-preview"
+  # provider: "openrouter"
+  model: ""
+  provider: ""
+
+cron:
+  # Clean deliveries. The brief carries its own date line; no job-name header
+  # or "the agent cannot see this" footer around it.
+  wrap_response: false
+  # Let Margaret reply to a brief in Telegram and have Jarvis see it in context.
+  mirror_delivery: true
+  # Two jobs at once at most, so a slow collector run cannot stack up.
+  max_parallel_jobs: 2
+  # Keep the last 60 outputs per job under ~/.hermes/cron/output/<job_id>/.
+  # The weekly review reads the evening summaries from there.
+  output_retention: 60
+
+# MCP servers give Jarvis direct tools for a service. Hermes has no built-in
+# Gmail or Calendar tool; the python collectors cover the briefs. Add a server
+# here when you want Jarvis to act on a service in conversation. Shape:
+#
+# mcp_servers:
+#   airtable:
+#     command: npx
+#     args: ["-y", "airtable-mcp-server"]
+#     env:
+#       AIRTABLE_API_KEY: "${AIRTABLE_TOKEN}"      # read from ~/.hermes/.env
+#   google-workspace:
+#     url: "https://example-workspace-mcp.invalid/mcp"   # replace with the server you choose
+#     auth: oauth
+#
+# Remove the leading "# " from the block you want, then rerun install.sh.
+# Check the package name and auth flow in that server's own README first.
