@@ -46,6 +46,9 @@ it private, turn on Vercel password protection for the project.
 7. Mon, Wed, Fri at noon, `content-scout` searches, scores, writes up to five
    recommendations into `content`, files the top two into the brain, and sends
    the top three.
+8. Sunday at 5:00 PM, `weekly-review` reads the week's evening summaries,
+   goals, and new brain notes, and sends wins, challenges, patterns, what to
+   improve, and next week's three priorities. The report is filed in the brain.
 
 ## Multi-account email and calendar
 

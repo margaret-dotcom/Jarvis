@@ -106,7 +106,8 @@ the repo: `gh auth login` or an SSH key added to your GitHub account.
 ## 8. Daily use
 
 - Morning brief arrives at 6:00 on weekdays, 7:30 on weekends.
-- Evening summary at 7:00 PM. Answer its goal questions in one line each.
+- Evening summary at 7:00 PM. Answer its four review questions (went well, did not, one lesson, one thanks) and any goal questions in one line each.
+- Weekly review arrives Sunday at 5:00 PM.
 - Drop anything into `brain/inbox/` or tell Jarvis on Telegram "remember this".
 - Ask Jarvis anything about either business. It searches the brain first.
 - Weekly: `git status` in the repo, look at what Hermes changed in

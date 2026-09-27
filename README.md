@@ -10,7 +10,7 @@ Five parts, one repo:
 |---|---|---|
 | Dashboard | One page with today's calendar, email that needs you, tasks, business numbers, goals, and content ideas. Refreshed every morning and hourly through the workday. | `dashboard/` |
 | Second brain | A library that only grows. Drop a file, a link, a thought, or a transcript in the inbox and it gets filed, indexed, and searchable. Every agent reads it before answering. | `brain/` |
-| Executive assistant | Hermes agents that send a morning brief and an evening summary to your phone, measured against your written goals. | `hermes/skills/morning-brief`, `hermes/skills/evening-summary` |
+| Executive assistant | Hermes agents that send a morning brief, an evening review, and a Sunday weekly review to your phone, all measured against your written goals. | `hermes/skills/morning-brief`, `hermes/skills/evening-summary`, `hermes/skills/weekly-review` |
 | Content scout | Scans YouTube, X, and the web three times a week for videos your audiences would value, and hands you an angle you could shoot with a phone. | `hermes/skills/content-scout` |
 | Chief of staff | One agent that takes a multi-part request, splits it across six specialists, verifies their work, and returns one answer. | `hermes/skills/chief-of-staff`, `hermes/skills/agents/` |
 

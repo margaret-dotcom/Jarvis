@@ -292,6 +292,13 @@
     }
     return el("span", { class: cls, text: text });
   }
+  function sourceLabel(name) {
+    var map = { asana: "Asana", airtable_atwc: "ATWC waitlist", airtable_qca: "QCA WIP", goals: "Goals", brain: "Second brain", content: "Content scout" };
+    var parts = name.split(":");
+    if (parts.length === 2 && parts[0] === "gmail") return "Gmail, " + parts[1];
+    if (parts.length === 2 && parts[0] === "gcal") return "Calendar, " + parts[1];
+    return map[name] || name;
+  }
   function nonEmpty(arr) { return Array.isArray(arr) && arr.length > 0; }
   function isNum(n) { return typeof n === "number" && isFinite(n); }
 
@@ -696,7 +703,7 @@
         var cls = s.status === "ok" ? "good" : s.status === "error" ? "warn" : "";
         var li = el("li", { title: s.fetched_at ? "fetched " + fmtTime(s.fetched_at) : null });
         li.appendChild(el("i", { class: "dot " + cls }));
-        li.appendChild(el("span", { text: s.name || "" }));
+        li.appendChild(el("span", { text: sourceLabel(s.name || "") }));
         var detail = s.detail || (s.status === "not_configured" ? "not set up" : s.status === "error" ? "failed" : "");
         if (detail) li.appendChild(el("span", { class: "detail", text: ", " + detail }));
         ul.appendChild(li);
