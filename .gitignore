@@ -1,0 +1,20 @@
+# secrets and tokens
+.env
+collectors/accounts.yaml
+collectors/credentials/
+collectors/tokens/
+*.token.json
+client_secret*.json
+
+# generated
+brain/.index.sqlite
+brain/inbox/*
+!brain/inbox/.gitkeep
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.DS_Store
+dashboard/data/history/
+
+brain/.processed/

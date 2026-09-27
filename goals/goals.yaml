@@ -1,0 +1,50 @@
+# The goals the morning brief and evening summary measure you against.
+# Every brief ends with: are you on track. This file is what "on track" means.
+#
+# Fill this in once, then edit whenever a goal changes. Keep it short: three
+# to six live goals is the sweet spot. The agents read this file every run.
+#
+# Fields
+#   id        short slug, stable over time
+#   title     the goal in your words
+#   business  atwc | qca | personal | other
+#   metric    how progress is measured. One of:
+#               manual          you tell the evening summary where you are
+#               airtable        a formula the finance agent can compute from a base
+#               asana_project   percent of tasks complete in an Asana project
+#   target    the number you are aiming for
+#   unit      what the number is (clients, jobs, dollars, sessions, pct)
+#   due       YYYY-MM-DD
+#   source    for airtable: base, table, and a one-line description of the count
+#             for asana_project: the project gid
+#
+# Nothing below is real yet. These are the shape only. Replace them.
+
+goals: []
+
+# Example shapes (leave commented until you replace with your real numbers):
+#
+# goals:
+#   - id: atwc-q4-waitlist-conversion
+#     title: Convert 70 percent of the ATWC waitlist to scheduled evaluations
+#     business: atwc
+#     metric: airtable
+#     target: 70
+#     unit: pct
+#     due: 2026-12-31
+#     source:
+#       base: appKWU9ggxyVYvs2g
+#       table: tblnwneQqlChWi8ks
+#       compute: scheduled / (scheduled + removed) for records entered this quarter
+#
+#   - id: qca-q4-gp
+#     title: Keep every active QCA job above 40 percent gross profit
+#     business: qca
+#     metric: airtable
+#     target: 40
+#     unit: pct
+#     due: 2026-12-31
+#     source:
+#       base: appkWXOY6hM0pxT76
+#       table: tblX1WhjyrukQulfC
+#       compute: minimum TOTAL GROSS PROFIT across jobs with status Scheduled/In Progress

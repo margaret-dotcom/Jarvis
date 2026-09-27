@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Jarvis daily view",
+  "description": "Everything the dashboard renders for one day. Written by collectors/build_today.py, refined by the Hermes morning brief job, read by dashboard/index.html.",
+  "type": "object",
+  "required": ["generated_at", "date", "timezone", "sources"],
+  "properties": {
+    "generated_at": {"type": "string", "format": "date-time"},
+    "date": {"type": "string", "format": "date"},
+    "timezone": {"type": "string"},
+    "owner": {"type": "string"},
+    "headline": {"type": "string", "description": "One spoken sentence about the shape of the day. Written by the agent, empty if the collector ran alone."},
+    "day_shape": {"type": "string", "enum": ["heavy", "normal", "open", ""]},
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "business", "status"],
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "business": {"type": "string", "enum": ["atwc", "qca", "personal", "other"]},
+          "target": {"type": ["number", "string", "null"]},
+          "current": {"type": ["number", "string", "null"]},
+          "unit": {"type": "string"},
+          "due": {"type": ["string", "null"]},
+          "status": {"type": "string", "enum": ["on_track", "at_risk", "behind", "done", "unknown"]},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "calendar": {
+      "type": "object",
+      "properties": {
+        "accounts": {"$ref": "#/$defs/accounts"},
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "account", "title", "start", "end"],
+            "properties": {
+              "id": {"type": "string"},
+              "account": {"type": "string"},
+              "business": {"type": "string"},
+              "title": {"type": "string"},
+              "start": {"type": "string"},
+              "end": {"type": "string"},
+              "all_day": {"type": "boolean"},
+              "location": {"type": "string"},
+              "attendees_count": {"type": "integer"},
+              "organizer_is_me": {"type": "boolean"},
+              "response": {"type": "string", "description": "accepted | tentative | needsAction | declined | owner"},
+              "link": {"type": "string"},
+              "conflict": {"type": "boolean"},
+              "day": {"type": "string", "enum": ["today", "tomorrow"]}
+            }
+          }
+        }
+      }
+    },
+    "email": {
+      "type": "object",
+      "properties": {
+        "accounts": {"$ref": "#/$defs/accounts"},
+        "counts": {
+          "type": "object",
+          "properties": {
+            "unread": {"type": "integer"},
+            "needs_reply": {"type": "integer"},
+            "waiting_on": {"type": "integer"}
+          }
+        },
+        "needs_reply": {"$ref": "#/$defs/threads"},
+        "waiting_on": {"$ref": "#/$defs/threads"}
+      }
+    },
+    "tasks": {
+      "type": "object",
+      "properties": {
+        "source": {"type": "string"},
+        "due_today": {"$ref": "#/$defs/tasks"},
+        "overdue": {"$ref": "#/$defs/tasks"},
+        "completed_yesterday": {"$ref": "#/$defs/tasks"}
+      }
+    },
+    "businesses": {
+      "type": "object",
+      "properties": {
+        "atwc": {
+          "type": "object",
+          "properties": {
+            "waitlist": {
+              "type": "object",
+              "properties": {
+                "pending": {"type": "integer"},
+                "added_this_month": {"type": "integer"},
+                "scheduled_this_month": {"type": "integer"},
+                "removed_this_month": {"type": "integer"},
+                "conversion_pct": {"type": ["number", "null"]},
+                "median_days_to_schedule": {"type": ["number", "null"]}
+              }
+            }
+          }
+        },
+        "qca": {
+          "type": "object",
+          "properties": {
+            "wip": {
+              "type": "object",
+              "properties": {
+                "active_jobs": {"type": "integer"},
+                "not_started": {"type": "integer"},
+                "on_hold": {"type": "integer"},
+                "total_contract_value": {"type": "number"},
+                "uncollected": {"type": "number"},
+                "avg_gp_pct": {"type": ["number", "null"]},
+                "jobs_below_40_gp": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "job": {"type": ["string", "integer"]},
+                      "customer": {"type": "string"},
+                      "gp_pct": {"type": "number"},
+                      "status": {"type": "string"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "brain": {
+      "type": "object",
+      "properties": {
+        "total_items": {"type": "integer"},
+        "ingested_yesterday": {"type": "integer"},
+        "inbox_pending": {"type": "integer"},
+        "recent": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {"type": "string"},
+              "path": {"type": "string"},
+              "business": {"type": "string"},
+              "added": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "scanned_at": {"type": "string"},
+        "recommendations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "platform", "url"],
+            "properties": {
+              "title": {"type": "string"},
+              "platform": {"type": "string"},
+              "url": {"type": "string"},
+              "creator": {"type": "string"},
+              "why": {"type": "string", "description": "Why this adds value to her audience, one sentence"},
+              "angle": {"type": "string", "description": "How she could make her own version"},
+              "audience": {"type": "string", "enum": ["atwc", "qca", "both"]},
+              "job": {"type": "string", "enum": ["attract", "activate", "ascend", "amplify"]},
+              "score": {"type": "number"}
+            }
+          }
+        }
+      }
+    },
+    "yesterday": {
+      "type": "object",
+      "properties": {
+        "summary": {"type": "string"},
+        "accomplished": {"type": "array", "items": {"type": "string"}},
+        "slipped": {"type": "array", "items": {"type": "string"}},
+        "carry_forward": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "properties": {
+          "name": {"type": "string"},
+          "status": {"type": "string", "enum": ["ok", "error", "not_configured"]},
+          "detail": {"type": "string"},
+          "fetched_at": {"type": "string"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "accounts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "email": {"type": "string"},
+          "business": {"type": "string"},
+          "label": {"type": "string"}
+        }
+      }
+    },
+    "threads": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "account", "from", "subject"],
+        "properties": {
+          "id": {"type": "string"},
+          "account": {"type": "string"},
+          "business": {"type": "string"},
+          "from": {"type": "string"},
+          "subject": {"type": "string"},
+          "received": {"type": "string"},
+          "age_hours": {"type": "number"},
+          "snippet": {"type": "string"},
+          "link": {"type": "string"}
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title"],
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "project": {"type": "string"},
+          "business": {"type": "string"},
+          "due": {"type": ["string", "null"]},
+          "link": {"type": "string"}
+        }
+      }
+    }
+  }
+}
